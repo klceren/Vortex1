@@ -5,3 +5,4 @@ pydantic
 opencv-python-headless
 librosa
 numpy
+yt-dlp
