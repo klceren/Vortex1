@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VORTEX</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg viewBox='0 0 48 48' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolygon points='24,2 42,13 42,35 24,46 6,35 6,13' stroke='%23e8ff00' stroke-width='1.5' fill='none' opacity='0.3'/%3E%3Cpolygon points='24,8 37,15.5 37,32.5 24,40 11,32.5 11,15.5' stroke='%23e8ff00' stroke-width='1' fill='none' opacity='0.6'/%3E%3Cpath d='M24 24 L36 14' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M24 24 L38 28' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M24 24 L24 40' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M24 24 L12 34' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M24 24 L10 20' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Cpath d='M24 24 L24 8' stroke='%23e8ff00' stroke-width='1.5' stroke-linecap='round' opacity='0.5'/%3E%3Ccircle cx='24' cy='24' r='5' fill='%23e8ff00' opacity='0.15'/%3E%3Ccircle cx='24' cy='24' r='3' fill='%23e8ff00' opacity='0.5'/%3E%3Ccircle cx='24' cy='24' r='1.5' fill='%23e8ff00'/%3E%3Ccircle cx='36' cy='14' r='2' fill='%23ff4d00'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0a0a;--surface:#111;--border:#222;--accent:#e8ff00;--accent2:#ff4d00;--text:#f0f0f0;--muted:#555;--card:#161616}
+*{margin:0;padding:0;box-sizing:border-box;scrollbar-width:thin;scrollbar-color:var(--accent) #1a1a1a}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#1a1a1a}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#fff}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:.4}
+
+/* ===== HEADER ===== */
+header{border-bottom:1px solid var(--border);padding:18px 24px 14px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--bg);position:sticky;top:0;z-index:100}
+.header-logo-wrap{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+.logo-icon{flex-shrink:0;width:48px;height:48px}
+@media(max-width:480px){.logo-icon{width:40px;height:40px}}
+.logo-text-group{display:flex;flex-direction:column;gap:2px;min-width:0}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;letter-spacing:.15em;color:var(--accent);line-height:1}
+@media(max-width:480px){.logo{font-size:2rem}}
+.logo-sub{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.platform-tags{display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.tag{font-family:'Space Mono',monospace;font-size:.5rem;padding:4px 9px;border:1px solid var(--border);color:var(--muted);letter-spacing:.1em}
+@media(max-width:560px){.platform-tags{display:none}}
+
+/* ===== TABS ===== */
+.tabs{display:flex;border-bottom:1px solid var(--border);padding:0 4px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;padding:12px 14px;background:none;border:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-btn:hover:not(.active){color:var(--text)}
+.tab-panel{display:none;opacity:0;transform:translateY(10px)}.tab-panel.active{display:block;animation:tabIn .3s cubic-bezier(.25,.46,.45,.94) forwards}@keyframes tabIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes tabOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-8px)}}
+
+main{max-width:760px;margin:0 auto;padding:32px 16px}
+@media(max-width:480px){main{padding:20px 12px}}
+
+/* ===== HOMEPAGE ===== */
+.home-hero{margin-bottom:48px;padding-top:8px}
+.home-hero-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.home-headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.2rem,10vw,6rem);line-height:.9;letter-spacing:.04em;margin-bottom:20px}
+.home-headline em{color:var(--accent);font-style:normal}
+.home-headline span{color:var(--accent2);font-style:normal}
+.home-desc{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);line-height:1.9;letter-spacing:.04em;max-width:480px;border-left:2px solid var(--border);padding-left:16px}
+.home-desc strong{color:var(--text)}
+
+/* TOOL GRID */
+.home-tools-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.25em;color:var(--muted);text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.home-tools-label span{font-size:.7rem;color:var(--accent)}
+.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:40px}
+@media(max-width:580px){.tools-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:360px){.tools-grid{grid-template-columns:1fr}}
+
+.tool-card{background:var(--card);border:1px solid var(--border);padding:18px 14px;cursor:pointer;transition:border-color .15s,background .15s;display:flex;flex-direction:column;gap:10px;position:relative;overflow:hidden}
+.tool-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .15s}
+.tool-card:hover{border-color:var(--accent);background:rgba(232,255,0,.03)}
+.tool-card:hover::before{background:var(--accent)}
+.tool-card-icon{font-size:1.6rem;line-height:1}
+.tool-card-name{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.12em;color:var(--text)}
+.tool-card-desc{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.7;letter-spacing:.03em}
+.tool-card-tag{margin-top:auto;font-family:'Space Mono',monospace;font-size:.5rem;letter-spacing:.1em;color:var(--accent2);text-transform:uppercase;border-top:1px solid var(--border);padding-top:10px}
+
+/* STATS ROW */
+.home-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border);margin-bottom:40px;overflow:hidden}
+@media(max-width:480px){.home-stats{grid-template-columns:repeat(2,1fr)}}
+.home-stat{padding:18px 12px;text-align:center;border-right:1px solid var(--border);background:var(--card)}
+.home-stat:last-child{border-right:none}
+@media(max-width:480px){.home-stat:nth-child(2){border-right:none}.home-stat:nth-child(3){border-top:1px solid var(--border)}.home-stat:nth-child(4){border-right:none;border-top:1px solid var(--border)}}
+.home-stat-val{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;color:var(--accent);line-height:1}
+.home-stat-key{font-family:'Space Mono',monospace;font-size:.48rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:4px}
+
+/* QUICK START */
+.home-quickstart{background:var(--card);border:1px solid var(--border);padding:22px;margin-bottom:40px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:480px){.home-quickstart{grid-template-columns:1fr;gap:14px}}
+.qs-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;grid-column:1/-1}
+.qs-step{display:flex;gap:12px;align-items:flex-start}
+.qs-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--border);line-height:1;flex-shrink:0;transition:color .2s}
+.qs-step:hover .qs-num{color:var(--accent)}
+.qs-text-wrap{padding-top:3px}
+.qs-step-title{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--text);letter-spacing:.05em;margin-bottom:4px}
+.qs-step-sub{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);line-height:1.7}
+
+/* FOOTER NOTE */
+.home-footer-note{font-family:'Space Mono',monospace;font-size:.55rem;color:#2a2a2a;letter-spacing:.1em;text-align:center;padding:10px 0}
+
+/* ===== SHARED STYLES ===== */
+.headline{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,8vw,5rem);line-height:.92;letter-spacing:.04em;margin-bottom:40px}
+.headline em{color:var(--accent);font-style:normal}
+.input-row{display:flex;margin-bottom:20px;border:1px solid var(--border);transition:border-color .2s}
+.input-row:focus-within{border-color:var(--accent)}
+#url-input{flex:1;background:var(--surface);border:none;outline:none;color:var(--text);font-family:'Space Mono',monospace;font-size:.8rem;padding:16px 20px;letter-spacing:.02em}
+#url-input::placeholder{color:var(--muted)}
+#fetch-btn{background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.15em;padding:16px 22px;text-transform:uppercase;transition:background .15s;white-space:nowrap}
+#fetch-btn:hover{background:#fff}#fetch-btn:disabled{background:var(--muted);cursor:not-allowed}
+.options-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:480px){.options-row{grid-template-columns:1fr}}
+.select-wrap label{display:block;font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.75rem;padding:11px 14px;appearance:none;cursor:pointer;outline:none}
+select:focus{border-color:var(--accent)}select:disabled{opacity:.4;cursor:not-allowed}
+#preview{display:none;background:var(--card);border:1px solid var(--border);padding:18px;margin-bottom:20px;gap:14px;align-items:flex-start}
+#preview.visible{display:flex}
+#thumb{width:110px;height:62px;object-fit:cover;flex-shrink:0;filter:contrast(1.1)}
+.preview-title{font-size:.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px}
+.preview-meta{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.05em}
+.action-btn{width:100%;background:transparent;border:2px solid var(--accent);color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.2em;padding:16px;cursor:pointer;transition:all .15s;margin-bottom:20px}
+.action-btn:hover{background:var(--accent);color:#000}
+.action-btn:disabled{border-color:var(--muted);color:var(--muted);cursor:not-allowed;background:transparent}
+.progress-area{display:none;border:1px solid var(--border);padding:18px;background:var(--card)}
+.progress-area.visible{display:block}
+.progress-header{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em;margin-bottom:10px}
+.pct-label{color:var(--accent);font-weight:700}
+.bar-track{height:3px;background:var(--border);position:relative;overflow:hidden}
+.bar-fill{height:100%;background:var(--accent);width:0%;transition:width .4s ease}
+.bar-track.indeterminate .bar-fill{width:30%;animation:slide 1.2s ease-in-out infinite}
+@keyframes slide{0%{transform:translateX(-150%)}100%{transform:translateX(450%)}}
+.status-text{margin-top:8px;font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted)}
+.dl-link{display:none;margin-top:14px;padding:13px 18px;background:var(--accent2);color:#fff;text-decoration:none;font-family:'Space Mono',monospace;font-size:.7rem;letter-spacing:.1em;font-weight:700;text-align:center}
+.dl-link.visible{display:block}
+.error-msg{display:none;margin-top:10px;padding:10px 14px;border:1px solid var(--accent2);color:var(--accent2);font-family:'Space Mono',monospace;font-size:.65rem}
+.error-msg.visible{display:block}
+.drop-zone{border:2px dashed var(--border);padding:44px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:20px;position:relative}
+.drop-zone:hover,.drop-zone.drag-over{border-color:var(--accent);background:rgba(232,255,0,.03)}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.drop-icon{font-size:2.2rem;margin-bottom:10px}
+.drop-label{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);letter-spacing:.1em}
+.drop-label strong{color:var(--text)}
+.drop-filename{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent);margin-top:8px}
+.format-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;min-height:40px;align-items:center}
+.fmt-chip{font-family:'Space Mono',monospace;font-size:.65rem;letter-spacing:.1em;padding:7px 14px;border:1px solid var(--border);cursor:pointer;text-transform:uppercase;transition:all .15s;color:var(--muted);background:var(--surface)}
+.fmt-chip:hover{border-color:var(--text);color:var(--text)}
+.fmt-chip.selected{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,.05)}
+.fmt-placeholder{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.1em}
+.legend{margin-top:44px;border-top:1px solid var(--border);padding-top:22px}
+.legend-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.legend-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
+.legend-cat{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);width:55px;flex-shrink:0}
+.legend-chips{display:flex;flex-wrap:wrap;gap:5px}
+.legend-chip{font-family:'Space Mono',monospace;font-size:.55rem;padding:3px 7px;border:1px solid var(--border);color:var(--muted)}
+.cut-video-wrap{margin-bottom:16px;display:none;flex-direction:column;gap:8px}
+.cut-video-wrap.visible{display:flex}
+.cut-video-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+#cut-video-player{width:100%;max-height:320px;background:#000;border:1px solid var(--border);display:block;outline:none}
+.cut-video-timecode{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);text-align:right;letter-spacing:.08em}
+.cut-video-controls{display:flex;gap:8px;align-items:center}
+.cut-vid-btn{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;padding:6px 12px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;text-transform:uppercase;transition:all .15s;flex-shrink:0}
+.cut-vid-btn:hover{border-color:var(--accent);color:var(--accent)}
+.waveform-wrap{margin-bottom:16px;display:none}
+.waveform-wrap.visible{display:block}
+.waveform-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+#waveform-canvas{width:100%;height:72px;display:block;background:var(--surface);border:1px solid var(--border);cursor:pointer}
+.waveform-loading{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);padding:8px 0;letter-spacing:.08em;display:none}
+.waveform-loading.visible{display:block}
+.dice-container{display:flex;flex-direction:column;align-items:center;gap:36px;padding:10px 0}
+.dice-scene{width:160px;height:160px;perspective:500px;margin:0 auto}
+.dice-cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 1.2s cubic-bezier(.25,.46,.45,.94)}
+.dice-face{position:absolute;width:160px;height:160px;background:var(--card);border:2px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;justify-content:center;padding:22px;gap:10px;backface-visibility:hidden}
+.dice-face.front {transform:rotateY(0deg)   translateZ(80px)}
+.dice-face.back  {transform:rotateY(180deg) translateZ(80px)}
+.dice-face.right {transform:rotateY(90deg)  translateZ(80px)}
+.dice-face.left  {transform:rotateY(-90deg) translateZ(80px)}
+.dice-face.top   {transform:rotateX(90deg)  translateZ(80px)}
+.dice-face.bottom{transform:rotateX(-90deg) translateZ(80px)}
+.dot{width:22px;height:22px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.dice-result{font-family:'Bebas Neue',sans-serif;font-size:5rem;line-height:1;color:var(--accent);min-height:90px;text-align:center;opacity:0;transition:opacity .4s .9s}
+.dice-result.visible{opacity:1}
+.dice-result-label{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;margin-top:-10px;opacity:0;transition:opacity .4s 1s}
+.dice-result-label.visible{opacity:1}
+.dice-history{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;min-height:28px}
+.dice-hist-chip{font-family:'Space Mono',monospace;font-size:.7rem;padding:4px 10px;border:1px solid var(--border);color:var(--muted)}
+.dice-hist-chip.latest{border-color:var(--accent);color:var(--accent)}
+.dice-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:380px}
+.dice-stat{background:var(--card);border:1px solid var(--border);padding:12px;text-align:center}
+.dice-stat-val{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;color:var(--accent);line-height:1}
+.dice-stat-key{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:3px}
+.cut-file-info{background:var(--card);border:1px solid var(--border);padding:14px 18px;margin-bottom:20px;display:none}
+.cut-file-info.visible{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.cut-file-name{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cut-file-dur{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);flex-shrink:0}
+.timeline-wrap{margin-bottom:24px;display:none}
+.timeline-wrap.visible{display:block}
+.timeline-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:10px}
+.timeline{position:relative;height:56px;background:var(--surface);border:1px solid var(--border);cursor:pointer;user-select:none}
+.tl-track{position:absolute;top:50%;left:0;right:0;height:4px;transform:translateY(-50%);background:var(--border)}
+.tl-range{position:absolute;top:50%;height:4px;transform:translateY(-50%);background:var(--accent);pointer-events:none}
+.tl-handle{position:absolute;top:50%;width:14px;height:28px;transform:translate(-50%,-50%);background:var(--accent);cursor:ew-resize;border-radius:2px}
+.tl-handle:hover{background:#fff}
+.tl-time-labels{display:flex;justify-content:space-between;font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);margin-top:6px}
+.cut-times{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.time-input-wrap label{display:block;font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.time-input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.85rem;padding:10px 14px;outline:none;text-align:center}
+.time-input:focus{border-color:var(--accent)}
+.cut-preview-bar{height:2px;background:var(--border);margin-bottom:20px;position:relative}
+.cut-preview-fill{position:absolute;top:0;height:100%;background:rgba(232,255,0,.3);pointer-events:none}
+.todo-input-row{display:flex;gap:10px;margin-bottom:24px}
+.todo-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.8rem;padding:14px 18px;outline:none;transition:border-color .2s}
+.todo-input:focus{border-color:var(--accent)}
+.todo-input::placeholder{color:var(--muted)}
+.todo-add-btn{background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.15em;padding:14px 20px;text-transform:uppercase;transition:background .15s;white-space:nowrap;flex-shrink:0}
+.todo-add-btn:hover{background:#fff}
+.todo-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.todo-count{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--muted);letter-spacing:.1em}
+.todo-clear-btn{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.1em;padding:6px 14px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;text-transform:uppercase;transition:all .15s}
+.todo-clear-btn:hover{border-color:var(--accent2);color:var(--accent2)}
+.todo-list{display:flex;flex-direction:column;gap:6px;min-height:60px}
+.todo-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:border-color .15s,opacity .15s;user-select:none}
+.todo-item:hover{border-color:var(--muted)}
+.todo-item.done{opacity:.45}
+.todo-item.done .todo-text{text-decoration:line-through;color:var(--muted)}
+.todo-check{width:18px;height:18px;border:2px solid var(--border);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.todo-item.done .todo-check{border-color:var(--accent);background:var(--accent)}
+.todo-check-tick{display:none;width:10px;height:10px}
+.todo-item.done .todo-check-tick{display:block}
+.todo-text{font-family:'DM Sans',sans-serif;font-size:.9rem;flex:1;transition:color .15s}
+.todo-del{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);background:none;border:none;cursor:pointer;padding:4px 6px;opacity:0;transition:opacity .15s,color .15s;flex-shrink:0}
+.todo-item:hover .todo-del{opacity:1}
+.todo-del:hover{color:var(--accent2)}
+.todo-empty{font-family:'Space Mono',monospace;font-size:.7rem;color:var(--muted);text-align:center;padding:40px 0;letter-spacing:.1em;border:1px dashed var(--border)}
+.todo-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
+.todo-stat{background:var(--card);border:1px solid var(--border);padding:14px;text-align:center}
+.todo-stat-val{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--accent);line-height:1}
+.todo-stat-key{font-family:'Space Mono',monospace;font-size:.5rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:3px}
+.transfer-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:600px){.transfer-grid{grid-template-columns:1fr}}
+.transfer-card{background:var(--card);border:1px solid var(--border);padding:20px;display:flex;flex-direction:column;gap:12px}
+.transfer-card-title{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.15em;color:var(--text);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.tc-icon{font-size:1rem}
+.transfer-card-sub{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--muted);letter-spacing:.08em}
+.tc-drop{margin:0!important;padding:24px 16px!important}
+.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:16px;margin-bottom:28px}
+.qr-box{background:#111;border:1px solid #222;padding:16px;display:inline-block}
+.qr-box img{display:block;width:200px;height:200px;image-rendering:pixelated}
+.qr-url{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.06em;word-break:break-all;text-align:center;max-width:320px}
+.qr-hint{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.1em;text-align:center}
+.transfer-files{margin-top:28px}
+.transfer-files-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.refresh-btn{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.1em;padding:4px 10px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;text-transform:uppercase;transition:all .15s}
+.refresh-btn:hover{border-color:var(--accent);color:var(--accent)}
+.transfer-file-item{background:var(--card);border:1px solid var(--border);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:6px}
+.tf-name{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.tf-size{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);flex-shrink:0}
+.tf-dl{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.08em;padding:5px 10px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;text-decoration:none;text-transform:uppercase;transition:all .15s;flex-shrink:0}
+.tf-dl:hover{border-color:var(--accent);color:var(--accent)}
+.transfer-empty{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);text-align:center;padding:28px 0;letter-spacing:.1em}
+.transfer-mobile-wrap{display:none;flex-direction:column;gap:16px;margin-bottom:28px}
+.transfer-mobile-wrap.visible{display:flex}
+.mobile-drop{border:2px dashed var(--border);padding:44px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
+.mobile-drop:hover,.mobile-drop.drag-over{border-color:var(--accent);background:rgba(232,255,0,.03)}
+.mobile-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.mobile-file-list{display:flex;flex-direction:column;gap:6px}
+.mobile-file-item{background:var(--card);border:1px solid var(--border);padding:10px 14px;display:flex;flex-direction:column;gap:5px}
+.mfi-name{font-family:'Space Mono',monospace;font-size:.68rem;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mfi-status{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted)}
+.mfi-status.done{color:var(--accent)}.mfi-status.err{color:var(--accent2)}
+.cb-qr-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:28px}
+.cb-qr-box{background:#111;border:1px solid #222;padding:14px}
+.cb-qr-box img{display:block;width:180px;height:180px;image-rendering:pixelated}
+.cb-qr-hint{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.1em;text-align:center}
+.cb-qr-url{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--accent);text-align:center;word-break:break-all;max-width:320px}
+.cb-panel{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+@media(max-width:560px){.cb-panel{grid-template-columns:1fr}}
+.cb-box{background:var(--card);border:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:10px}
+.cb-box-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.cb-box-title span{color:var(--accent)}
+.cb-textarea{width:100%;height:130px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.78rem;padding:12px 14px;outline:none;resize:vertical;transition:border-color .2s;line-height:1.5}
+.cb-textarea:focus{border-color:var(--accent)}
+.cb-textarea::placeholder{color:var(--muted)}
+.cb-send-btn{background:var(--accent);color:#000;border:none;cursor:pointer;font-family:'Space Mono',monospace;font-size:.65rem;font-weight:700;letter-spacing:.15em;padding:13px;text-transform:uppercase;transition:background .15s}
+.cb-send-btn:hover{background:#fff}
+.cb-recv-text{width:100%;height:130px;background:var(--surface);border:1px solid var(--border);color:var(--accent);font-family:'Space Mono',monospace;font-size:.78rem;padding:12px 14px;outline:none;resize:none;line-height:1.5;cursor:default}
+.cb-copy-btn{background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.12em;padding:10px;cursor:pointer;text-transform:uppercase;transition:all .15s}
+.cb-copy-btn:hover{border-color:var(--accent);color:var(--accent)}
+.cb-status{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.08em;min-height:16px;text-align:center}
+.cb-status.ok{color:var(--accent)}.cb-status.err{color:var(--accent2)}
+.pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:5px;animation:pulsedot 1.4s ease-in-out infinite}
+@keyframes pulsedot{0%,100%{opacity:1}50%{opacity:.2}}
+.cam-layout{display:grid;grid-template-columns:1fr 260px;gap:20px;margin-bottom:24px}
+@media(max-width:700px){.cam-layout{grid-template-columns:1fr}}
+.cam-feed-wrap{background:#000;border:1px solid var(--border);aspect-ratio:16/9;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.cam-feed-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+.cam-feed-ph{font-family:'Space Mono',monospace;font-size:.62rem;color:#2a2a2a;letter-spacing:.1em;text-align:center;line-height:2}
+.cam-overlay{position:absolute;top:8px;left:8px;display:flex;gap:6px}
+.cam-badge{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.12em;padding:3px 7px;border:1px solid;text-transform:uppercase}
+.cam-badge.connected{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,.08)}
+.cam-badge.live{border-color:var(--accent2);color:var(--accent2);background:rgba(255,77,0,.08);animation:recblink 1s ease-in-out infinite}
+@keyframes recblink{0%,100%{opacity:1}50%{opacity:.3}}
+.cam-rec-btn{width:100%;padding:15px;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.2em;border:2px solid var(--accent);color:var(--accent);background:transparent;cursor:pointer;transition:all .15s;margin-top:12px}
+.cam-rec-btn:hover:not(:disabled){background:var(--accent);color:#000}
+.cam-rec-btn.recording{border-color:var(--accent2);color:var(--accent2);animation:recblink 1s ease-in-out infinite}
+.cam-rec-btn.recording:hover{background:var(--accent2);color:#fff;animation:none}
+.cam-rec-btn:disabled{border-color:var(--muted);color:var(--muted);cursor:not-allowed}
+.cam-sidebar{display:flex;flex-direction:column;gap:14px}
+.cam-qr-box{background:#111;border:1px solid #222;padding:12px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.cam-qr-box img{width:150px;height:150px;image-rendering:pixelated}
+.cam-qr-hint{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);letter-spacing:.1em;text-align:center}
+.cam-qr-url{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--accent);word-break:break-all;text-align:center}
+.cam-stats{background:var(--card);border:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:8px}
+.cam-stat-row{display:flex;justify-content:space-between}
+.cam-stat-k{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.cam-stat-v{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text)}
+.cam-stat-v.acc{color:var(--accent)}
+.cam-rec-status{font-family:'Space Mono',monospace;font-size:.6rem;text-align:center;margin-top:8px;min-height:18px;color:var(--muted)}
+.cam-rec-status.ok{color:var(--accent)}.cam-rec-status.err{color:var(--accent2)}
+.cam-rec-list-title{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-top:24px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.cam-rec-item{background:var(--card);border:1px solid var(--border);padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.cam-rec-name{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.cam-rec-size{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);flex-shrink:0}
+.cam-rec-dl{font-family:'Space Mono',monospace;font-size:.54rem;padding:5px 10px;border:1px solid var(--border);background:none;color:var(--muted);text-decoration:none;flex-shrink:0;transition:all .15s}
+.cam-rec-dl:hover{border-color:var(--accent);color:var(--accent)}
+.cam-rec-empty{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);text-align:center;padding:20px 0;border:1px dashed var(--border)}
+.mirror-layout{display:grid;grid-template-columns:1fr 260px;gap:20px;margin-bottom:24px}
+@media(max-width:700px){.mirror-layout{grid-template-columns:1fr}}
+.mirror-status-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;background:var(--card);border:1px solid var(--border);padding:12px 16px}
+.mirror-status-item{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:.58rem}
+.mirror-status-dot{font-size:.7rem;color:var(--muted)}
+.mirror-status-dot.ok{color:var(--accent)}
+.mirror-status-dot.err{color:var(--accent2)}
+.mirror-section{background:var(--card);border:1px solid var(--border);padding:14px}
+.mirror-section-title{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.mirror-section-title span{color:var(--accent)}
+.mirror-device-list{margin-bottom:10px;min-height:36px}
+.mirror-device-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);background:var(--surface);margin-bottom:6px;cursor:pointer;transition:border-color .15s}
+.mirror-device-item:hover,.mirror-device-item.selected{border-color:var(--accent)}
+.mirror-device-serial{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--accent)}
+.mirror-device-info{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted)}
+.mirror-empty{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--muted);padding:8px 0}
+.mirror-btn{width:100%;padding:10px;background:none;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:all .15s}
+.mirror-btn:hover{border-color:var(--accent);color:var(--accent)}
+.mirror-input{background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.72rem;padding:9px 12px;outline:none;transition:border-color .2s}
+.mirror-input:focus{border-color:var(--accent)}
+.mirror-settings-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+@media(max-width:500px){.mirror-settings-grid{grid-template-columns:1fr}}
+.mirror-label{display:block;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
+.mirror-select{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Space Mono',monospace;font-size:.7rem;padding:8px 10px;appearance:none;cursor:pointer;outline:none}
+.mirror-select:focus{border-color:var(--accent)}
+.mirror-start-btn{flex:1;padding:14px;background:none;border:2px solid var(--accent);color:var(--accent);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;cursor:pointer;transition:all .15s}
+.mirror-start-btn:hover{background:var(--accent);color:#000}
+.mirror-stop-btn{padding:14px 20px;background:none;border:2px solid var(--accent2);color:var(--accent2);font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.2em;cursor:pointer;transition:all .15s}
+.mirror-stop-btn:hover{background:var(--accent2);color:#fff}
+.mirror-log{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);margin-top:8px;min-height:16px;letter-spacing:.06em}
+.mirror-log.ok{color:var(--accent)}.mirror-log.err{color:var(--accent2)}
+.mirror-hint-box{background:var(--surface);border:1px dashed var(--border);padding:12px;font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);line-height:1.9}
+.mirror-hint-box strong{color:var(--text)}
+.mirror-install-box{background:var(--card);border:1px solid var(--border);padding:14px}
+.mirror-install-step{margin-bottom:12px;font-family:'Space Mono',monospace;font-size:.58rem;line-height:1.8;color:var(--muted)}
+.mirror-install-step strong{color:var(--text)}
+.mirror-link{color:var(--accent);text-decoration:none}
+.mirror-link:hover{text-decoration:underline}
+.mirror-sidebar{display:flex;flex-direction:column;gap:0}
+.mirror-stats{background:var(--card);border:1px solid var(--border);padding:12px;display:flex;flex-direction:column;gap:8px}
+.mirror-stat-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.mirror-stat-k{font-family:'Space Mono',monospace;font-size:.52rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0}
+.mirror-stat-v{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--text)}
+.mirror-stat-v.acc{color:var(--accent)}
+footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-size:.55rem;color:#2a2a2a;letter-spacing:.1em;border-top:1px solid var(--border);margin-top:70px}
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <div class="header-logo-wrap">
+    <!-- VORTEX SVG LOGO - Ana sayfaya yönlendir -->
+    <a href="#" onclick="switchTab('home',document.querySelector('.tab-btn'));return false;" style="display:flex;align-items:center;gap:14px;text-decoration:none;flex:1;min-width:0">
+    <svg class="logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Outer rotating hexagon -->
+      <polygon points="24,2 42,13 42,35 24,46 6,35 6,13" stroke="#e8ff00" stroke-width="1.5" fill="none" opacity="0.3"/>
+      <!-- Middle ring -->
+      <polygon points="24,8 37,15.5 37,32.5 24,40 11,32.5 11,15.5" stroke="#e8ff00" stroke-width="1" fill="none" opacity="0.6"/>
+      <!-- Vortex spiral arms -->
+      <path d="M24 24 L36 14" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M24 24 L38 28" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M24 24 L24 40" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M24 24 L12 34" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M24 24 L10 20" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <path d="M24 24 L24 8" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+      <!-- Center core -->
+      <circle cx="24" cy="24" r="5" fill="#e8ff00" opacity="0.15"/>
+      <circle cx="24" cy="24" r="3" fill="#e8ff00" opacity="0.5"/>
+      <circle cx="24" cy="24" r="1.5" fill="#e8ff00"/>
+      <!-- Accent dot -->
+      <circle cx="36" cy="14" r="2" fill="#ff4d00"/>
+    </svg>
+
+    <div class="logo-text-group">
+      <div class="logo">VORTEX</div>
+      <div class="logo-sub">İndir · Dönüştür · Kes · Transfer · Zar · Görev · Pano · Kamera · Ekran</div>
+    </div>
+    </a>
+  </div>
+  <div class="platform-tags">
+    <span class="tag">YouTube</span>
+    <span class="tag">Instagram</span>
+    <span class="tag">+500 site</span>
+    <span class="tag">yt-dlp</span>
+    <span class="tag">ffmpeg</span>
+  </div>
+</header>
+
+<!-- ===== TABS ===== -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('home',this)">⌂ ANA SAYFA</button>
+  <button class="tab-btn" onclick="switchTab('download',this)">⬇ İNDİR</button>
+  <button class="tab-btn" onclick="switchTab('convert',this)">⇄ DÖNÜŞTÜR</button>
+  <button class="tab-btn" onclick="switchTab('cut',this)">✂ KES</button>
+  <button class="tab-btn" onclick="switchTab('dice',this)">🎲 ZAR</button>
+  <button class="tab-btn" onclick="switchTab('transfer',this);initTransfer()">📡 TRANSFER</button>
+  <button class="tab-btn" onclick="switchTab('todo',this);initTodo()">✅ GÖREVLER</button>
+  <button class="tab-btn" onclick="switchTab('clipboard',this);initClipboard()">📋 PANO</button>
+  <button class="tab-btn" onclick="switchTab('camera',this);initCamera()">📷 KAMERA</button>
+  <button class="tab-btn" onclick="switchTab('mirror',this);initMirror()">🖥 EKRAN</button>
+</div>
+
+<main>
+
+<!-- ===== HOME ===== -->
+<div id="tab-home" class="tab-panel active">
+  <div class="home-hero">
+    <div class="home-hero-label">// Çok amaçlı araç seti v1.0</div>
+    <h1 class="home-headline">HER ŞEY<br><em>BİR</em><br><span>YERDE.</span></h1>
+    <p class="home-desc">
+      VORTEX, <strong>video indirme</strong>, <strong>format dönüştürme</strong>, <strong>medya kesme</strong> ve daha fazlasını tek çatı altında sunan yerel bir araç setidir. Sunucu tabanlı çalışır — veriler makinenizi terk etmez.
+    </p>
+  </div>
+
+  <!-- STATS -->
+  <div class="home-stats">
+    <div class="home-stat"><div class="home-stat-val">500+</div><div class="home-stat-key">Desteklenen Site</div></div>
+    <div class="home-stat"><div class="home-stat-val">9</div><div class="home-stat-key">Araç</div></div>
+    <div class="home-stat"><div class="home-stat-val">∞</div><div class="home-stat-key">Sınırsız İndirme</div></div>
+    <div class="home-stat"><div class="home-stat-val">0</div><div class="home-stat-key">Reklam / Ücret</div></div>
+  </div>
+
+  <!-- TOOL CARDS -->
+  <div class="home-tools-label">
+    <span>Araçlar</span>
+    <span>9 modül</span>
+  </div>
+  <div class="tools-grid">
+
+    <div class="tool-card" onclick="switchTabByName('download')">
+      <div class="tool-card-icon">⬇</div>
+      <div class="tool-card-name">İNDİR</div>
+      <div class="tool-card-desc">YouTube, Instagram ve 500+ siteden video veya ses olarak indir. Kalite ve format seçimi desteklenir.</div>
+      <div class="tool-card-tag">yt-dlp · MP4 · MP3</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('convert')">
+      <div class="tool-card-icon">⇄</div>
+      <div class="tool-card-name">DÖNÜŞTÜR</div>
+      <div class="tool-card-desc">Video, ses ve görsel dosyalarını istediğin formata çevir. MP4, MP3, WAV, GIF, WEBP ve daha fazlası.</div>
+      <div class="tool-card-tag">ffmpeg · 15+ format</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('cut')">
+      <div class="tool-card-icon">✂</div>
+      <div class="tool-card-name">KES</div>
+      <div class="tool-card-desc">Ses ve video dosyalarından istediğin bölümü seç, kes ve indir. Dalga formu ve video önizleme desteği.</div>
+      <div class="tool-card-tag">Timeline · Waveform</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('transfer')">
+      <div class="tool-card-icon">📡</div>
+      <div class="tool-card-name">TRANSFER</div>
+      <div class="tool-card-desc">Telefon ile bilgisayar arasında QR kodu üzerinden hızlı dosya transferi yap. Kablo gerekmez.</div>
+      <div class="tool-card-tag">Wi-Fi · QR · Çift yön</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('todo')">
+      <div class="tool-card-icon">✅</div>
+      <div class="tool-card-name">GÖREVLER</div>
+      <div class="tool-card-desc">Basit ve hızlı görev listesi. Ekle, tamamla, sil. İstatistiklerle takip et.</div>
+      <div class="tool-card-tag">Yerel kayıt</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('clipboard')">
+      <div class="tool-card-icon">📋</div>
+      <div class="tool-card-name">PANO</div>
+      <div class="tool-card-desc">Telefon ve bilgisayar arasında metin kopyala-yapıştır. Canlı senkronizasyon, QR ile anında bağlan.</div>
+      <div class="tool-card-tag">Canlı · QR · Anlık</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('camera')">
+      <div class="tool-card-icon">📷</div>
+      <div class="tool-card-name">KAMERA</div>
+      <div class="tool-card-desc">Telefonunu uzak kamera olarak kullan. Canlı görüntü izle, kayıt al ve bilgisayara aktar.</div>
+      <div class="tool-card-tag">MJPEG · Canlı kayıt</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('mirror')">
+      <div class="tool-card-icon">🖥</div>
+      <div class="tool-card-name">EKRAN YANSIT</div>
+      <div class="tool-card-desc">Android ekranını USB veya Wi-Fi üzerinden bilgisayara yansıt. scrcpy tabanlı, düşük gecikme.</div>
+      <div class="tool-card-tag">scrcpy · ADB · Wi-Fi</div>
+    </div>
+
+    <div class="tool-card" onclick="switchTabByName('dice')">
+      <div class="tool-card-icon">🎲</div>
+      <div class="tool-card-name">ZAR</div>
+      <div class="tool-card-desc">3D animasyonlu D6 zar at. İstatistik takibi, atış geçmişi ve farklı zar tipleri.</div>
+      <div class="tool-card-tag">3D · İstatistik</div>
+    </div>
+
+  </div>
+
+
+  <div class="home-footer-note">VORTEX — yt-dlp + ffmpeg + scrcpy — Kişisel kullanım için · Yerel sunucu · Veriler cihazınızda kalır</div>
+</div>
+
+<!-- ===== DOWNLOAD ===== -->
+<div id="tab-download" class="tab-panel">
+  <h1 class="headline">VİDEOYU<br><em>YAKALA.</em><br>İNDİR.</h1>
+  <div class="input-row">
+    <div style="display:flex;align-items:center;padding:0 12px;background:var(--surface);border-right:1px solid var(--border);flex-shrink:0"><svg width="20" height="20" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg"><polygon points="24,2 42,13 42,35 24,46 6,35 6,13" stroke="#e8ff00" stroke-width="1.5" fill="none" opacity="0.3"/><polygon points="24,8 37,15.5 37,32.5 24,40 11,32.5 11,15.5" stroke="#e8ff00" stroke-width="1" fill="none" opacity="0.6"/><path d="M24 24 L36 14" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M24 24 L38 28" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M24 24 L24 40" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M24 24 L12 34" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M24 24 L10 20" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><path d="M24 24 L24 8" stroke="#e8ff00" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/><circle cx="24" cy="24" r="5" fill="#e8ff00" opacity="0.15"/><circle cx="24" cy="24" r="3" fill="#e8ff00" opacity="0.5"/><circle cx="24" cy="24" r="1.5" fill="#e8ff00"/><circle cx="36" cy="14" r="2" fill="#ff4d00"/></svg></div>
+    <input id="url-input" type="text" placeholder="Video URL'sini buraya yapıştır..." autocomplete="off" spellcheck="false">
+    <button id="fetch-btn" onclick="fetchInfo()">BİLGİ AL</button>
+  </div>
+  <div class="options-row">
+    <div class="select-wrap"><label>Format</label><select id="fmt-select" onchange="updateQualityOptions()"><option value="video">🎬 Video (MP4)</option><option value="audio">🎵 Ses (MP3)</option></select></div>
+    <div class="select-wrap"><label>Kalite</label><select id="quality-select"><option value="best">En İyi</option><option value="1080">1080p</option><option value="720">720p</option><option value="480">480p</option></select></div>
+  </div>
+  <div id="preview"><img id="thumb" src="" alt=""><div><div class="preview-title" id="preview-title"></div><div class="preview-meta" id="preview-meta"></div></div></div>
+  <button id="dl-btn" class="action-btn" onclick="startDownload()" disabled>İNDİRMEYE BAŞLA</button>
+  <div id="dl-progress" class="progress-area">
+    <div class="progress-header"><span id="dl-status-label">İNDİRİLİYOR</span><span id="dl-pct-label" class="pct-label">0%</span></div>
+    <div class="bar-track" id="dl-bar-track"><div id="dl-bar-fill" class="bar-fill"></div></div>
+    <div id="dl-status-text" class="status-text"></div>
+    <a id="dl-link" class="dl-link" href="#" target="_blank">⬇ DOSYAYI İNDİR</a>
+    <div id="dl-error" class="error-msg"></div>
+  </div>
+</div>
+
+<!-- ===== CONVERT ===== -->
+<div id="tab-convert" class="tab-panel">
+  <h1 class="headline">DOSYAYI<br><em>DÖNÜŞTÜR.</em></h1>
+  <div class="drop-zone" id="conv-drop">
+    <input type="file" id="convert-file" onchange="onConvFileSelect(this)">
+    <div class="drop-icon">📂</div>
+    <div class="drop-label"><strong>Dosya seç</strong> veya buraya sürükle</div>
+    <div class="drop-filename" id="conv-drop-filename"></div>
+  </div>
+  <div class="select-wrap" style="margin-bottom:12px;">
+    <label>Hedef Format</label>
+    <div class="format-grid" id="format-grid"><span class="fmt-placeholder">Önce bir dosya seç...</span></div>
+  </div>
+  <button id="conv-btn" class="action-btn" onclick="startConvert()" disabled>DÖNÜŞTÜR</button>
+  <div id="conv-progress" class="progress-area">
+    <div class="progress-header"><span id="conv-status-label">DÖNÜŞTÜRÜLÜYOR</span><span id="conv-pct-label" class="pct-label">…</span></div>
+    <div class="bar-track" id="conv-bar-track"><div id="conv-bar-fill" class="bar-fill"></div></div>
+    <div id="conv-status-text" class="status-text"></div>
+    <a id="conv-link" class="dl-link" href="#" target="_blank">⬇ DÖNÜŞTÜRÜLMÜŞ DOSYAYI İNDİR</a>
+    <div id="conv-error" class="error-msg"></div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Desteklenen Formatlar</div>
+    <div class="legend-group"><div class="legend-cat">Ses</div><div class="legend-chips"><span class="legend-chip">MP3</span><span class="legend-chip">WAV</span><span class="legend-chip">OGG</span><span class="legend-chip">FLAC</span><span class="legend-chip">AAC</span><span class="legend-chip">M4A</span><span class="legend-chip">OPUS</span></div></div>
+    <div class="legend-group"><div class="legend-cat">Video</div><div class="legend-chips"><span class="legend-chip">MP4</span><span class="legend-chip">AVI</span><span class="legend-chip">MKV</span><span class="legend-chip">MOV</span><span class="legend-chip">WEBM</span><span class="legend-chip">GIF</span></div></div>
+    <div class="legend-group"><div class="legend-cat">Görsel</div><div class="legend-chips"><span class="legend-chip">JPG</span><span class="legend-chip">PNG</span><span class="legend-chip">WEBP</span><span class="legend-chip">BMP</span><span class="legend-chip">TIFF</span></div></div>
+  </div>
+</div>
+
+<!-- ===== CUT ===== -->
+<div id="tab-cut" class="tab-panel">
+  <h1 class="headline">DOSYAYI<br><em>KES.</em></h1>
+  <div class="drop-zone" id="cut-drop">
+    <input type="file" id="cut-file-input" accept="audio/*,video/*" onchange="onCutFileSelect(this)">
+    <div class="drop-icon">✂️</div>
+    <div class="drop-label"><strong>Ses veya video dosyası seç</strong> ya da sürükle</div>
+    <div class="drop-filename" id="cut-drop-filename"></div>
+  </div>
+  <div class="cut-file-info" id="cut-file-info">
+    <div class="cut-file-name" id="cut-file-name"></div>
+    <div class="cut-file-dur" id="cut-file-dur"></div>
+  </div>
+  <div class="cut-video-wrap" id="cut-video-wrap">
+    <div class="cut-video-label">Önizleme</div>
+    <video id="cut-video-player" controls preload="metadata"></video>
+    <div class="cut-video-controls">
+      <button class="cut-vid-btn" onclick="jumpToStart()">⏮ Başlangıca Git</button>
+      <button class="cut-vid-btn" onclick="previewSelection()">▶ Seçimi Oynat</button>
+      <button class="cut-vid-btn" onclick="jumpToEnd()">⏭ Bitişe Git</button>
+      <div style="flex:1"></div>
+      <div class="cut-video-timecode" id="cut-video-timecode">0:00 / 0:00</div>
+    </div>
+  </div>
+  <div class="timeline-wrap" id="timeline-wrap">
+    <div class="timeline-label">Kesim Aralığını Seç</div>
+    <div class="waveform-wrap" id="waveform-wrap">
+      <div class="waveform-label">Ses Dalgası</div>
+      <canvas id="waveform-canvas" height="72"></canvas>
+      <div class="waveform-loading" id="waveform-loading">Dalga formu yükleniyor...</div>
+    </div>
+    <div class="timeline" id="timeline">
+      <div class="tl-track"></div>
+      <div class="tl-range" id="tl-range"></div>
+      <div class="tl-handle" id="tl-start" title="Başlangıç"></div>
+      <div class="tl-handle" id="tl-end" title="Bitiş"></div>
+    </div>
+    <div class="tl-time-labels">
+      <span id="tl-label-start">0:00</span>
+      <span id="tl-label-end">0:00</span>
+    </div>
+    <div class="cut-times">
+      <div class="time-input-wrap">
+        <label>Başlangıç</label>
+        <input class="time-input" id="cut-start-input" type="text" value="0:00" onchange="onTimeInputChange('start')">
+      </div>
+      <div class="time-input-wrap">
+        <label>Bitiş</label>
+        <input class="time-input" id="cut-end-input" type="text" value="0:00" onchange="onTimeInputChange('end')">
+      </div>
+    </div>
+    <div class="cut-preview-bar"><div class="cut-preview-fill" id="cut-preview-fill"></div></div>
+  </div>
+  <button id="cut-btn" class="action-btn" onclick="startCut()" disabled>KES VE İNDİR</button>
+  <div id="cut-progress" class="progress-area">
+    <div class="progress-header"><span id="cut-status-label">KESİLİYOR</span><span id="cut-pct-label" class="pct-label">…</span></div>
+    <div class="bar-track" id="cut-bar-track"><div id="cut-bar-fill" class="bar-fill"></div></div>
+    <div id="cut-status-text" class="status-text"></div>
+    <a id="cut-link" class="dl-link" href="#" target="_blank">⬇ KESİLMİŞ DOSYAYI İNDİR</a>
+    <div id="cut-error" class="error-msg"></div>
+  </div>
+</div>
+
+<!-- ===== DICE ===== -->
+<div id="tab-dice" class="tab-panel">
+  <h1 class="headline">ŞANSI<br><em>DENE.</em></h1>
+  <div class="dice-container">
+    <div>
+      <div class="dice-scene" id="dice-scene">
+        <div class="dice-cube" id="dice-cube">
+          <div class="dice-face front"  id="face-front"></div>
+          <div class="dice-face back"   id="face-back"></div>
+          <div class="dice-face right"  id="face-right"></div>
+          <div class="dice-face left"   id="face-left"></div>
+          <div class="dice-face top"    id="face-top"></div>
+          <div class="dice-face bottom" id="face-bottom"></div>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div class="dice-result" id="dice-result">—</div>
+      <div class="dice-result-label" id="dice-result-label">Henüz atılmadı</div>
+    </div>
+    <button class="action-btn" onclick="rollDice()" id="roll-btn" style="max-width:320px">🎲 ZAR AT</button>
+    <div class="dice-stats">
+      <div class="dice-stat"><div class="dice-stat-val" id="stat-total">0</div><div class="dice-stat-key">Toplam Atış</div></div>
+      <div class="dice-stat"><div class="dice-stat-val" id="stat-avg">—</div><div class="dice-stat-key">Ortalama</div></div>
+      <div class="dice-stat"><div class="dice-stat-val" id="stat-max">—</div><div class="dice-stat-key">En Yüksek</div></div>
+    </div>
+    <div>
+      <div class="timeline-label" style="text-align:center;margin-bottom:10px">Son Atışlar</div>
+      <div class="dice-history" id="dice-history"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TRANSFER ===== -->
+<div id="tab-transfer" class="tab-panel">
+  <h1 class="headline">DOSYA<br><em>TRANSFER.</em></h1>
+  <div class="transfer-grid">
+    <div class="transfer-card">
+      <div class="transfer-card-title"><span class="tc-icon">📱→💻</span> TELEFONA GÖNDER</div>
+      <div class="transfer-card-sub">QR'ı okut, telefondan indir</div>
+      <div class="drop-zone tc-drop" id="tc-drop">
+        <input type="file" multiple onchange="tcAddFiles(this.files)">
+        <div class="drop-icon">📂</div>
+        <div class="drop-label"><strong>Dosya ekle</strong> veya sürükle</div>
+        <div class="drop-filename" id="tc-drop-hint"></div>
+      </div>
+      <div class="qr-wrap" id="qr-wrap">
+        <div class="qr-box"><img id="qr-img" src="" alt="" width="180" height="180"></div>
+        <div class="qr-url" id="qr-url">Yükleniyor...</div>
+        <div class="qr-hint">Telefon aynı Wi-Fi'da olmalı</div>
+      </div>
+      <div class="transfer-mobile-wrap" id="transfer-mobile-wrap">
+        <div class="mobile-drop" id="mobile-drop">
+          <input type="file" multiple onchange="mobileUpload(this.files)">
+          <div style="font-size:2rem;margin-bottom:8px">📤</div>
+          <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:.1em">Dosya seç veya sürükle</div>
+        </div>
+        <div class="mobile-file-list" id="mobile-file-list"></div>
+      </div>
+    </div>
+    <div class="transfer-card">
+      <div class="transfer-card-title"><span class="tc-icon">💻→📱</span> PAYLAŞILAN DOSYALAR</div>
+      <div class="transfer-card-sub">Telefon ↔ Bilgisayar ortak alan</div>
+      <div class="transfer-files-title" style="margin-top:16px">
+        <span>Dosyalar</span>
+        <button class="refresh-btn" onclick="loadTransferFiles()">↻ Yenile</button>
+      </div>
+      <div id="transfer-file-list"><div class="transfer-empty">Henüz dosya yok</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TODO ===== -->
+<div id="tab-todo" class="tab-panel">
+  <h1 class="headline">GÖREV<br><em>LİSTESİ.</em></h1>
+  <div class="todo-input-row">
+    <input class="todo-input" id="todo-input" type="text" placeholder="Yeni görev ekle..." autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')addTodo()">
+    <button class="todo-add-btn" onclick="addTodo()">+ EKLE</button>
+  </div>
+  <div class="todo-actions">
+    <span class="todo-count" id="todo-count">0 görev</span>
+    <button class="todo-clear-btn" onclick="clearTodos()">🗑 Tümünü Temizle</button>
+  </div>
+  <div class="todo-list" id="todo-list">
+    <div class="todo-empty">Henüz görev yok — yukarıdan ekle</div>
+  </div>
+  <div class="todo-stats">
+    <div class="todo-stat"><div class="todo-stat-val" id="ts-total">0</div><div class="todo-stat-key">Toplam</div></div>
+    <div class="todo-stat"><div class="todo-stat-val" id="ts-done">0</div><div class="todo-stat-key">Tamamlanan</div></div>
+    <div class="todo-stat"><div class="todo-stat-val" id="ts-left">0</div><div class="todo-stat-key">Kalan</div></div>
+  </div>
+</div>
+
+<!-- ===== CLIPBOARD ===== -->
+<div id="tab-clipboard" class="tab-panel">
+  <h1 class="headline">LOCAL<br><em>PANO.</em></h1>
+  <div class="cb-qr-wrap">
+    <div class="cb-qr-box"><img id="cb-qr-img" src="" alt="QR" style="width:180px;height:180px;image-rendering:pixelated"></div>
+    <div class="cb-qr-hint"><span class="pulse-dot"></span>Telefonu bağlamak için QR'ı tara</div>
+    <div class="cb-qr-url" id="cb-qr-url">Yükleniyor...</div>
+  </div>
+  <div class="cb-panel">
+    <div class="cb-box">
+      <div class="cb-box-title"><span>⬆</span> GÖNDER</div>
+      <textarea class="cb-textarea" id="cb-send-input" placeholder="Buraya yaz veya yapıştır..." spellcheck="false"></textarea>
+      <button class="cb-send-btn" onclick="cbSend()">GÖNDER &amp; PANOYA KOPYALA</button>
+      <div class="cb-status" id="cb-send-status"></div>
+    </div>
+    <div class="cb-box">
+      <div class="cb-box-title"><span>⬇</span> AL&nbsp;<span id="cb-live-ind" style="margin-left:auto;font-size:.5rem;color:var(--muted)">● canlı</span></div>
+      <textarea class="cb-recv-text" id="cb-recv-text" readonly placeholder="Diğer cihazdan gelen metin..."></textarea>
+      <button class="cb-copy-btn" onclick="cbCopyReceived()">📋 PANOYA KOPYALA</button>
+      <div class="cb-status" id="cb-recv-status"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CAMERA ===== -->
+<div id="tab-camera" class="tab-panel">
+  <h1 class="headline">UZAKTAN<br><em>KAMERA.</em></h1>
+  <div class="cam-layout">
+    <div>
+      <div class="cam-feed-wrap" id="cam-feed-wrap">
+        <img id="cam-feed-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
+        <div class="cam-feed-ph" id="cam-feed-ph">📷 Telefon QR'ı okutunca<br>görüntü burada görünür</div>
+        <div class="cam-overlay">
+          <span class="cam-badge connected" id="cam-conn-badge" style="display:none">● BAĞLI</span>
+          <span class="cam-badge live" id="cam-rec-badge" style="display:none">● KAYIT</span>
+        </div>
+      </div>
+      <button class="cam-rec-btn" id="cam-rec-btn" onclick="camToggleRecord()" disabled>● KAYIT BAŞLAT</button>
+      <div class="cam-rec-status" id="cam-rec-status"></div>
+      <div class="cam-rec-list-title">
+        <span>Kaydedilenler</span>
+        <button class="refresh-btn" onclick="loadCamRecordings()">↻ Yenile</button>
+      </div>
+      <div id="cam-rec-list"><div class="cam-rec-empty">Henüz kayıt yok</div></div>
+    </div>
+    <div class="cam-sidebar">
+      <div class="cam-qr-box">
+        <img id="cam-qr-img" src="" alt="QR" style="width:150px;height:150px;image-rendering:pixelated">
+        <div class="cam-qr-hint"><span class="pulse-dot"></span>Telefon kamerası için tara</div>
+        <div class="cam-qr-url" id="cam-qr-url">Yükleniyor...</div>
+      </div>
+      <div class="cam-stats">
+        <div class="cam-stat-row"><span class="cam-stat-k">Durum</span><span class="cam-stat-v" id="cam-status-v">Bekleniyor</span></div>
+        <div class="cam-stat-row"><span class="cam-stat-k">Süre</span><span class="cam-stat-v acc" id="cam-elapsed-v">—</span></div>
+        <div class="cam-stat-row"><span class="cam-stat-k">Kare</span><span class="cam-stat-v" id="cam-frames-v">0</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MIRROR ===== -->
+<div id="tab-mirror" class="tab-panel">
+  <h1 class="headline">SCRCPY<br><em>YANSIТ.</em></h1>
+  <div class="mirror-status-bar" id="mirror-status-bar">
+    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-scrcpy">○</span><span class="mirror-stat-k">scrcpy</span><span class="mirror-stat-v" id="m-val-scrcpy">Kontrol ediliyor...</span></div>
+    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-adb">○</span><span class="mirror-stat-k">adb</span><span class="mirror-stat-v" id="m-val-adb">Kontrol ediliyor...</span></div>
+    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-dev">○</span><span class="mirror-stat-k">Cihaz</span><span class="mirror-stat-v" id="m-val-dev">—</span></div>
+    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-run">○</span><span class="mirror-stat-k">Yansıtma</span><span class="mirror-stat-v" id="m-val-run">Kapalı</span></div>
+  </div>
+  <div class="mirror-layout">
+    <div>
+      <div class="mirror-section">
+        <div class="mirror-section-title"><span>🔌</span> USB BAĞLANTI</div>
+        <div class="mirror-device-list" id="mirror-device-list"><div class="mirror-empty">Cihaz aranıyor...</div></div>
+        <button class="mirror-btn" onclick="mirrorRefreshDevices()">↻ Cihazları Tara</button>
+      </div>
+      <div class="mirror-section" style="margin-top:16px">
+        <div class="mirror-section-title"><span>📶</span> WI-FI BAĞLANTI (USB'siz)</div>
+        <div class="mirror-hint-box" style="margin-bottom:10px">
+          1. Önce USB ile bağla → <strong>TCP/IP Etkinleştir</strong> butonuna bas<br>
+          2. USB'yi çıkar → Telefon IP'sini gir → <strong>Bağlan</strong>
+        </div>
+        <div style="display:flex;gap:8px;margin-bottom:8px">
+          <button class="mirror-btn" style="flex:1" onclick="mirrorTcpip()">USB → TCP/IP Etkinleştir</button>
+        </div>
+        <div style="display:flex;gap:8px">
+          <input id="mirror-wifi-ip" class="mirror-input" placeholder="192.168.1.x" style="flex:1">
+          <button class="mirror-btn" style="width:90px" onclick="mirrorWifiConnect()">Bağlan</button>
+        </div>
+        <div class="mirror-log" id="mirror-wifi-log"></div>
+      </div>
+      <div class="mirror-section" style="margin-top:16px">
+        <div class="mirror-section-title"><span>⚙</span> AYARLAR</div>
+        <div class="mirror-settings-grid">
+          <div><label class="mirror-label">Bitrate</label>
+            <select class="mirror-select" id="m-bitrate">
+              <option value="4M">4 Mbps</option>
+              <option value="8M" selected>8 Mbps</option>
+              <option value="16M">16 Mbps</option>
+              <option value="32M">32 Mbps (Max)</option>
+            </select></div>
+          <div><label class="mirror-label">Max FPS</label>
+            <select class="mirror-select" id="m-fps">
+              <option value="30">30 FPS</option>
+              <option value="60" selected>60 FPS</option>
+            </select></div>
+          <div><label class="mirror-label">Çözünürlük</label>
+            <select class="mirror-select" id="m-size">
+              <option value="720">720p</option>
+              <option value="1080" selected>1080p</option>
+              <option value="1440">1440p</option>
+            </select></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button class="mirror-start-btn" id="mirror-start-btn" onclick="mirrorStart()">▶ YANSITMAYI BAŞLAT</button>
+        <button class="mirror-stop-btn" id="mirror-stop-btn" onclick="mirrorStop()" style="display:none">■ DURDUR</button>
+      </div>
+      <div class="mirror-log" id="mirror-main-log"></div>
+    </div>
+    <div class="mirror-sidebar">
+      <div class="mirror-install-box">
+        <div class="mirror-section-title"><span>📦</span> KURULUM</div>
+        <div class="mirror-install-step"><strong>1. scrcpy indir</strong><br>
+          <a href="https://github.com/Genymobile/scrcpy/releases" target="_blank" class="mirror-link">github.com/Genymobile/scrcpy</a><br>
+          <span style="color:#444">ZIP'i çıkar, PATH'e ekle veya app.py yanına koy</span>
+        </div>
+        <div class="mirror-install-step"><strong>2. Telefonda USB hata ayıklama aç</strong><br>
+          <span style="color:#444">Ayarlar → Geliştirici seçenekleri → USB hata ayıklama</span>
+        </div>
+        <div class="mirror-install-step"><strong>3. USB ile bağla</strong><br>
+          <span style="color:#444">Telefonda "İzin ver" de → Cihazları Tara</span>
+        </div>
+      </div>
+      <div class="mirror-stats" style="margin-top:12px">
+        <div class="mirror-stat-row"><span class="mirror-stat-k">scrcpy</span><span class="mirror-stat-v acc" id="m-path-scrcpy" style="font-size:.5rem;word-break:break-all">—</span></div>
+        <div class="mirror-stat-row"><span class="mirror-stat-k">adb</span><span class="mirror-stat-v acc" id="m-path-adb" style="font-size:.5rem;word-break:break-all">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+<footer>VORTEX — yt-dlp + ffmpeg powered — Kişisel kullanım için</footer>
+
+<script>
+// ===== TABS =====
+function switchTab(name,btn){
+  const current=document.querySelector('.tab-panel.active');
+  const next=document.getElementById('tab-'+name);
+  if(current===next)return;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(current){
+    current.style.animation='tabOut .2s cubic-bezier(.25,.46,.45,.94) forwards';
+    setTimeout(()=>{
+      current.classList.remove('active');
+      current.style.animation='';
+      next.classList.add('active');
+    },180);
+  } else {
+    next.classList.add('active');
+  }
+}
+function switchTabByName(name){
+  const btn=document.querySelector(`.tab-btn[onclick*="switchTab('${name}'"]`);
+  if(btn){btn.click();}
+}
+
+// ===== DOWNLOAD =====
+let dlJobId=null,dlPoll=null;
+function updateQualityOptions(){const fmt=document.getElementById('fmt-select').value,q=document.getElementById('quality-select');if(fmt==='audio'){q.innerHTML='<option value="best">192kbps (MP3)</option>';q.disabled=true}else{q.innerHTML='<option value="best">En İyi</option><option value="1080">1080p</option><option value="720">720p</option><option value="480">480p</option>';q.disabled=false}}
+async function fetchInfo(){const url=document.getElementById('url-input').value.trim();if(!url)return;const btn=document.getElementById('fetch-btn');btn.disabled=true;btn.textContent='...';hideDlError();try{const res=await fetch('/info',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url})});const data=await res.json();if(data.error){showDlError(data.error)}else{document.getElementById('thumb').src=data.thumbnail||'';document.getElementById('preview-title').textContent=data.title||url;const dur=data.duration?formatDur(data.duration):'';document.getElementById('preview-meta').textContent=[data.uploader,dur].filter(Boolean).join(' · ');document.getElementById('preview').classList.add('visible');document.getElementById('dl-btn').disabled=false}}catch(e){showDlError('Sunucuya bağlanılamadı.')}btn.disabled=false;btn.textContent='BİLGİ AL'}
+async function startDownload(){const url=document.getElementById('url-input').value.trim(),fmt=document.getElementById('fmt-select').value,quality=document.getElementById('quality-select').value;document.getElementById('dl-btn').disabled=true;document.getElementById('dl-progress').classList.add('visible');document.getElementById('dl-link').classList.remove('visible');hideDlError();setInd('dl-bar-track',true);document.getElementById('dl-pct-label').textContent='…';document.getElementById('dl-status-text').textContent='Başlatılıyor...';try{const res=await fetch('/download',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,format:fmt,quality})});const data=await res.json();dlJobId=data.job_id;pollJob(dlJobId,'dl')}catch(e){showDlError('İndirme başlatılamadı.');document.getElementById('dl-btn').disabled=false}}
+function showDlError(msg){const el=document.getElementById('dl-error');el.textContent='⚠ '+msg;el.classList.add('visible')}
+function hideDlError(){document.getElementById('dl-error').classList.remove('visible')}
+
+// ===== CONVERT =====
+let convFile=null,convOutputExt=null,convJobId=null;
+const convDz=document.getElementById('conv-drop');
+convDz.addEventListener('dragover',e=>{e.preventDefault();convDz.classList.add('drag-over')});
+convDz.addEventListener('dragleave',()=>convDz.classList.remove('drag-over'));
+convDz.addEventListener('drop',e=>{e.preventDefault();convDz.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)processConvFile(f)});
+function onConvFileSelect(input){if(input.files[0])processConvFile(input.files[0])}
+async function processConvFile(file){convFile=file;convOutputExt=null;document.getElementById('conv-drop-filename').textContent=file.name;document.getElementById('conv-btn').disabled=true;const ext=file.name.split('.').pop().toLowerCase();try{const res=await fetch('/convert/formats',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ext})});const data=await res.json();renderFmts(data.formats)}catch(e){document.getElementById('format-grid').innerHTML='<span class="fmt-placeholder">Hata</span>'}}
+function renderFmts(formats){const grid=document.getElementById('format-grid');if(!formats.length){grid.innerHTML='<span class="fmt-placeholder">Bu format desteklenmiyor</span>';return}grid.innerHTML=formats.map(f=>'<button class="fmt-chip" onclick="selectFmt(\''+f+'\',this)">'+f.toUpperCase()+'</button>').join('')}
+function selectFmt(ext,el){document.querySelectorAll('.fmt-chip').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');convOutputExt=ext;document.getElementById('conv-btn').disabled=false}
+async function startConvert(){if(!convFile||!convOutputExt)return;document.getElementById('conv-btn').disabled=true;document.getElementById('conv-progress').classList.add('visible');document.getElementById('conv-link').classList.remove('visible');hideConvError();setInd('conv-bar-track',true);document.getElementById('conv-pct-label').textContent='…';document.getElementById('conv-status-label').textContent='YÜKLENIYOR';const fd=new FormData();fd.append('file',convFile);fd.append('output_ext',convOutputExt);try{const res=await fetch('/convert',{method:'POST',body:fd});const data=await res.json();if(data.error){showConvError(data.error);document.getElementById('conv-btn').disabled=false;return}convJobId=data.job_id;pollJob(convJobId,'conv')}catch(e){showConvError('Dönüştürme başlatılamadı.');document.getElementById('conv-btn').disabled=false}}
+function showConvError(msg){const el=document.getElementById('conv-error');el.textContent='⚠ '+msg;el.classList.add('visible')}
+function hideConvError(){document.getElementById('conv-error').classList.remove('visible')}
+
+// ===== CUT =====
+let cutFile=null,cutDuration=0,cutStart=0,cutEnd=0,cutDragging=null,cutJobId=null,cutPoll=null;
+const cutDz=document.getElementById('cut-drop');
+cutDz.addEventListener('dragover',e=>{e.preventDefault();cutDz.classList.add('drag-over')});
+cutDz.addEventListener('dragleave',()=>cutDz.classList.remove('drag-over'));
+cutDz.addEventListener('drop',e=>{e.preventDefault();cutDz.classList.remove('drag-over');const f=e.dataTransfer.files[0];if(f)processCutFile(f)});
+function onCutFileSelect(input){if(input.files[0])processCutFile(input.files[0])}
+async function processCutFile(file){cutFile=file;document.getElementById('cut-drop-filename').textContent=file.name;document.getElementById('cut-btn').disabled=true;document.getElementById('cut-file-info').classList.remove('visible');document.getElementById('timeline-wrap').classList.remove('visible');document.getElementById('cut-video-wrap').classList.remove('visible');const isVideo=file.type.startsWith('video/');const videoWrap=document.getElementById('cut-video-wrap');const videoEl=document.getElementById('cut-video-player');if(isVideo){const objUrl=URL.createObjectURL(file);videoEl.src=objUrl;videoEl.load();videoWrap.classList.add('visible');videoEl.ontimeupdate=updateVideoTimecode}else{videoEl.src='';videoWrap.classList.remove('visible')}const fd=new FormData();fd.append('file',file);try{const res=await fetch('/cut/probe',{method:'POST',body:fd});const data=await res.json();if(data.error){showCutError(data.error);return}cutDuration=data.duration||0;cutStart=0;cutEnd=cutDuration;document.getElementById('cut-file-name').textContent=file.name;document.getElementById('cut-file-dur').textContent='Süre: '+formatDur(Math.round(cutDuration));document.getElementById('cut-file-info').classList.add('visible');document.getElementById('timeline-wrap').classList.add('visible');document.getElementById('cut-btn').disabled=false;renderTimeline();updateTimeInputs();updatePreviewFill();if(!isVideo)drawWaveform(file)}catch(e){showCutError('Dosya okunamadı.')}}
+function renderTimeline(){const tl=document.getElementById('timeline');const sh=document.getElementById('tl-start');const eh=document.getElementById('tl-end');positionHandles();function getRelX(e){const rect=tl.getBoundingClientRect();const clientX=e.touches?e.touches[0].clientX:e.clientX;return Math.max(0,Math.min(1,(clientX-rect.left)/rect.width))}function onMove(e){if(!cutDragging)return;const p=getRelX(e);const sec=p*cutDuration;if(cutDragging==='start'){cutStart=Math.min(sec,cutEnd-0.5);cutStart=Math.max(0,cutStart)}else{cutEnd=Math.max(sec,cutStart+0.5);cutEnd=Math.min(cutDuration,cutEnd)}positionHandles();updateTimeInputs();updatePreviewFill();e.preventDefault()}sh.addEventListener('mousedown',e=>{cutDragging='start';e.preventDefault()});eh.addEventListener('mousedown',e=>{cutDragging='end';e.preventDefault()});sh.addEventListener('touchstart',e=>{cutDragging='start'},{passive:true});eh.addEventListener('touchstart',e=>{cutDragging='end'},{passive:true});document.addEventListener('mousemove',onMove);document.addEventListener('touchmove',onMove,{passive:false});document.addEventListener('mouseup',()=>cutDragging=null);document.addEventListener('touchend',()=>cutDragging=null);tl.addEventListener('click',e=>{if(cutDragging)return;const p=getRelX(e);const sec=p*cutDuration;const ds=Math.abs(sec-cutStart),de=Math.abs(sec-cutEnd);if(ds<de){cutStart=Math.min(sec,cutEnd-0.5);cutStart=Math.max(0,cutStart)}else{cutEnd=Math.max(sec,cutStart+0.5);cutEnd=Math.min(cutDuration,cutEnd)}positionHandles();updateTimeInputs();updatePreviewFill()})}
+function updateVideoTimecode(){const v=document.getElementById('cut-video-player');const tc=document.getElementById('cut-video-timecode');if(!v.duration)return;tc.textContent=formatDur(Math.round(v.currentTime))+' / '+formatDur(Math.round(v.duration));const inRange=v.currentTime>=cutStart&&v.currentTime<=cutEnd;tc.style.color=inRange?'var(--accent)':'var(--muted)';if(v._previewMode&&v.currentTime>=cutEnd){v.pause();v._previewMode=false}}
+function jumpToStart(){const v=document.getElementById('cut-video-player');if(!v.src)return;v._previewMode=false;v.currentTime=cutStart;v.pause()}
+function jumpToEnd(){const v=document.getElementById('cut-video-player');if(!v.src)return;v._previewMode=false;v.currentTime=Math.max(0,cutEnd-2);v.pause()}
+function previewSelection(){const v=document.getElementById('cut-video-player');if(!v.src)return;v.currentTime=cutStart;v._previewMode=true;v.play()}
+function positionHandles(){if(!cutDuration)return;const ps=(cutStart/cutDuration)*100;const pe=(cutEnd/cutDuration)*100;document.getElementById('tl-start').style.left=ps+'%';document.getElementById('tl-end').style.left=pe+'%';const range=document.getElementById('tl-range');range.style.left=ps+'%';range.style.width=(pe-ps)+'%';document.getElementById('tl-label-start').textContent=formatDur(Math.round(cutStart));document.getElementById('tl-label-end').textContent=formatDur(Math.round(cutEnd));const v=document.getElementById('cut-video-player');if(v&&v.src&&cutDragging){v.currentTime=cutDragging==='start'?cutStart:cutEnd}}
+function updateTimeInputs(){document.getElementById('cut-start-input').value=formatDurDecimal(cutStart);document.getElementById('cut-end-input').value=formatDurDecimal(cutEnd)}
+function onTimeInputChange(which){const val=which==='start'?document.getElementById('cut-start-input').value:document.getElementById('cut-end-input').value;const sec=parseTimeInput(val);if(isNaN(sec))return;if(which==='start'){cutStart=Math.max(0,Math.min(sec,cutEnd-0.5))}else{cutEnd=Math.min(cutDuration,Math.max(sec,cutStart+0.5))}positionHandles();updatePreviewFill();updateTimeInputs();const v=document.getElementById('cut-video-player');if(v&&v.src)v.currentTime=which==='start'?cutStart:cutEnd}
+function updatePreviewFill(){const fill=document.getElementById('cut-preview-fill');fill.style.left=(cutStart/cutDuration*100)+'%';fill.style.width=((cutEnd-cutStart)/cutDuration*100)+'%'}
+function parseTimeInput(str){str=str.trim();const parts=str.split(':');if(parts.length===2)return parseInt(parts[0])*60+parseFloat(parts[1]);if(parts.length===3)return parseInt(parts[0])*3600+parseInt(parts[1])*60+parseFloat(parts[2]);return parseFloat(str)}
+async function startCut(){if(!cutFile)return;document.getElementById('cut-btn').disabled=true;document.getElementById('cut-progress').classList.add('visible');document.getElementById('cut-link').classList.remove('visible');hideCutError();setInd('cut-bar-track',true);document.getElementById('cut-pct-label').textContent='…';document.getElementById('cut-status-text').textContent='Dosya yükleniyor...';const fd=new FormData();fd.append('file',cutFile);fd.append('start',cutStart.toString());fd.append('end',cutEnd.toString());try{const res=await fetch('/cut',{method:'POST',body:fd});const data=await res.json();if(data.error){showCutError(data.error);document.getElementById('cut-btn').disabled=false;return}cutJobId=data.job_id;pollJob(cutJobId,'cut')}catch(e){showCutError('Kesme başlatılamadı.');document.getElementById('cut-btn').disabled=false}}
+function showCutError(msg){const el=document.getElementById('cut-error');el.textContent='⚠ '+msg;el.classList.add('visible')}
+function hideCutError(){document.getElementById('cut-error').classList.remove('visible')}
+
+// ===== SHARED JOB POLLING =====
+const polls={};
+function pollJob(jobId,prefix){
+  if(polls[prefix])clearInterval(polls[prefix]);
+  polls[prefix]=setInterval(async()=>{
+    try{const res=await fetch('/status/'+jobId);const d=await res.json();const statusEl=document.getElementById(prefix+'-status-label');const pctEl=document.getElementById(prefix+'-pct-label');const textEl=document.getElementById(prefix+'-status-text');const linkEl=document.getElementById(prefix+'-link');const btnEl=document.getElementById(prefix+'-btn');
+    if(d.status==='downloading'){setInd(prefix+'-bar-track',false);const pct=parseFloat(d.progress)||0;document.getElementById(prefix+'-bar-fill').style.width=pct+'%';pctEl.textContent=d.progress;if(statusEl)statusEl.textContent='İNDİRİLİYOR';textEl.textContent=[d.speed,d.eta?'ETA: '+d.eta:''].filter(Boolean).join('  ·  ')}
+    else if(d.status==='processing'||d.status==='starting'){setInd(prefix+'-bar-track',true);if(statusEl)statusEl.textContent=prefix==='cut'?'KESİLİYOR':'İŞLENİYOR';textEl.textContent=d.title||''}
+    else if(d.status==='done'){clearInterval(polls[prefix]);setInd(prefix+'-bar-track',false);document.getElementById(prefix+'-bar-fill').style.width='100%';pctEl.textContent='✓';if(statusEl)statusEl.textContent='TAMAMLANDI';textEl.textContent=d.filename||'';linkEl.href='/file/'+jobId;linkEl.classList.add('visible');if(btnEl)btnEl.disabled=false}
+    else if(d.status==='error'){clearInterval(polls[prefix]);setInd(prefix+'-bar-track',false);if(prefix==='dl')showDlError(d.error||'Hata');else if(prefix==='conv')showConvError(d.error||'Hata');else showCutError(d.error||'Hata');if(btnEl)btnEl.disabled=false}
+    }catch(e){}
+  },700);
+}
+
+// ===== UTILS =====
+function setInd(trackId,v){document.getElementById(trackId).classList.toggle('indeterminate',v)}
+function formatDur(s){s=Math.round(s);const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),sec=s%60;if(h>0)return h+':'+String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');return m+':'+String(sec).padStart(2,'0')}
+function formatDurDecimal(s){const m=Math.floor(s/60),sec=s%60;return m+':'+String(Math.floor(sec)).padStart(2,'0')}
+
+// ===== WAVEFORM =====
+async function drawWaveform(file){const wrap=document.getElementById('waveform-wrap');const loading=document.getElementById('waveform-loading');const canvas=document.getElementById('waveform-canvas');wrap.classList.add('visible');loading.classList.add('visible');canvas.style.display='none';try{const arrayBuf=await file.arrayBuffer();const audioCtx=new(window.AudioContext||window.webkitAudioContext)();const audioBuf=await audioCtx.decodeAudioData(arrayBuf);const data=audioBuf.getChannelData(0);const dpr=window.devicePixelRatio||1;const W=canvas.parentElement.clientWidth||660;const H=72;canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';const ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);const step=Math.ceil(data.length/W);const mid=H/2;ctx.strokeStyle='rgba(255,255,255,0.04)';ctx.lineWidth=1;for(let y=0;y<=H;y+=H/4){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(let x=0;x<W;x++){let min=1,max=-1;for(let j=0;j<step;j++){const s=data[(x*step+j)];if(s!==undefined){if(s<min)min=s;if(s>max)max=s}}const amp=Math.abs(max-min)/2;const barH=Math.max(2,amp*H*0.92);const intensity=Math.min(1,amp*2.5);const r=Math.round(232*intensity);const g=Math.round(255*intensity);ctx.fillStyle=`rgba(${r},${g},0,${0.35+intensity*0.65})`;ctx.fillRect(x,mid-barH/2,1,barH)}loading.classList.remove('visible');canvas.style.display='block';audioCtx.close()}catch(e){loading.textContent='Dalga formu oluşturulamadı (yalnızca ses dosyaları desteklenir)';loading.classList.add('visible');canvas.style.display='none'}}
+
+// ===== DICE =====
+let diceType=6,diceRolling=false,diceHistory=[],diceStats={total:0,sum:0,max:0};
+const FACE_DOTS={1:[[null,null,null],[null,'c',null],[null,null,null]],2:[['tl',null,null],[null,null,null],[null,null,'br']],3:[['tl',null,null],[null,'c',null],[null,null,'br']],4:[['tl',null,'tr'],[null,null,null],['bl',null,'br']],5:[['tl',null,'tr'],[null,'c',null],['bl',null,'br']],6:[['tl',null,'tr'],['ml',null,'mr'],['bl',null,'br']]};
+function renderFace(faceEl,n){if(n===null||n===undefined){faceEl.innerHTML='';return}const grid=FACE_DOTS[n];if(!grid){faceEl.innerHTML=`<span style="font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--accent);line-height:1">${n}</span>`;return}faceEl.innerHTML='';faceEl.style.display='grid';faceEl.style.gridTemplateColumns='repeat(3,1fr)';faceEl.style.gridTemplateRows='repeat(3,1fr)';faceEl.style.gap='4px';faceEl.style.padding='18px';grid.forEach(row=>row.forEach(cell=>{const d=document.createElement('div');d.style.display='flex';d.style.alignItems='center';d.style.justifyContent='center';if(cell){const dot=document.createElement('div');dot.className='dot';d.appendChild(dot)}faceEl.appendChild(d)}))}
+const FACE_TRANSFORMS={1:{rx:0,ry:0},6:{rx:0,ry:180},2:{rx:0,ry:-90},5:{rx:0,ry:90},4:{rx:90,ry:0},3:{rx:-90,ry:0}};
+function initDiceFaces(){const names=['front','back','right','left','top','bottom'];const vals=[1,6,2,5,3,4];vals.forEach((v,i)=>renderFace(document.getElementById('face-'+names[i]),v))}
+initDiceFaces();
+function rollDice(){if(diceRolling)return;diceRolling=true;const btn=document.getElementById('roll-btn');btn.disabled=true;const resultEl=document.getElementById('dice-result');const labelEl=document.getElementById('dice-result-label');resultEl.classList.remove('visible');labelEl.classList.remove('visible');const cube=document.getElementById('dice-cube');const result=Math.floor(Math.random()*diceType)+1;const finalRx=360*2+Math.random()*360;const finalRy=360*3+Math.random()*360;let landRx=finalRx,landRy=finalRy;if(diceType===6){const ft=FACE_TRANSFORMS[result];landRx=(Math.round(finalRx/360)*360)+ft.rx;landRy=(Math.round(finalRy/360)*360)+ft.ry}cube.style.transition='transform 1.4s cubic-bezier(.15,.5,.3,1)';cube.style.transform=`rotateX(${landRx}deg) rotateY(${landRy}deg)`;setTimeout(()=>{resultEl.textContent=result;resultEl.classList.add('visible');labelEl.textContent=diceType===6?'D6 zar sonucu':`D${diceType} sonucu`;labelEl.classList.add('visible');diceHistory.unshift(result);if(diceHistory.length>10)diceHistory.pop();diceStats.total++;diceStats.sum+=result;if(result>diceStats.max)diceStats.max=result;updateDiceUI();diceRolling=false;btn.disabled=false},1500)}
+function updateDiceUI(){document.getElementById('stat-total').textContent=diceStats.total;document.getElementById('stat-avg').textContent=diceStats.total?(diceStats.sum/diceStats.total).toFixed(1):'—';document.getElementById('stat-max').textContent=diceStats.max||'—';const hist=document.getElementById('dice-history');hist.innerHTML=diceHistory.map((v,i)=>`<span class="dice-hist-chip${i===0?' latest':''}">${v}</span>`).join('')}
+
+// ===== TRANSFER =====
+const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+function initTransfer(){if(isMobile){document.getElementById('qr-wrap').style.display='none';document.getElementById('transfer-mobile-wrap').classList.add('visible')}else{loadQR()}loadTransferFiles();const tcDrop=document.getElementById('tc-drop');if(tcDrop){tcDrop.addEventListener('dragover',e=>{e.preventDefault();tcDrop.classList.add('drag-over')});tcDrop.addEventListener('dragleave',()=>tcDrop.classList.remove('drag-over'));tcDrop.addEventListener('drop',e=>{e.preventDefault();tcDrop.classList.remove('drag-over');tcAddFiles(e.dataTransfer.files)})}}
+async function loadQR(){try{const res=await fetch('/transfer/qr');const data=await res.json();if(data.error){document.getElementById('qr-url').textContent=data.error;return}document.getElementById('qr-img').src=data.qr;document.getElementById('qr-url').textContent=data.url}catch(e){document.getElementById('qr-url').textContent='Sunucuya bağlanılamadı'}}
+function tcAddFiles(files){const hint=document.getElementById('tc-drop-hint');hint.textContent=`${files.length} dosya yükleniyor...`;[...files].forEach(file=>{const fd=new FormData();fd.append('file',file);const xhr=new XMLHttpRequest();xhr.open('POST','/transfer/upload');xhr.onload=()=>{if(xhr.status===200){loadTransferFiles();hint.textContent='✓ '+file.name+' eklendi'}else{hint.textContent='⚠ Hata: '+file.name}};xhr.onerror=()=>{hint.textContent='⚠ Bağlantı hatası'};xhr.send(fd)})}
+async function loadTransferFiles(){const list=document.getElementById('transfer-file-list');try{const res=await fetch('/transfer/files');const data=await res.json();if(!data.files.length){list.innerHTML='<div class="transfer-empty">Henüz dosya yok</div>';return}list.innerHTML=data.files.map(f=>{const displayName=f.name.includes('_')?f.name.split('_').slice(1).join('_'):f.name;const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';return`<div class="transfer-file-item"><div class="tf-name">${displayName}</div><div class="tf-size">${size}</div><a class="tf-dl" href="/transfer/files/${f.name}" download="${displayName}">⬇ İndir</a></div>`}).join('')}catch(e){list.innerHTML='<div class="transfer-empty">Hata oluştu</div>'}}
+function mobileUpload(files){[...files].forEach(file=>{const id='mf'+Date.now()+Math.random().toString(36).slice(2);const list=document.getElementById('mobile-file-list');const item=document.createElement('div');item.className='mobile-file-item';item.id=id;item.innerHTML=`<div class="mfi-name">${file.name}</div><div class="bar-track"><div class="bar-fill" id="bar-${id}"></div></div><div class="mfi-status" id="st-${id}">Yükleniyor...</div>`;list.prepend(item);const fd=new FormData();fd.append('file',file);const xhr=new XMLHttpRequest();xhr.open('POST','/transfer/upload');xhr.upload.onprogress=e=>{if(e.lengthComputable){const p=(e.loaded/e.total*100).toFixed(0);document.getElementById('bar-'+id).style.width=p+'%';document.getElementById('st-'+id).textContent=p+'%'}};xhr.onload=()=>{const st=document.getElementById('st-'+id);if(xhr.status===200){document.getElementById('bar-'+id).style.width='100%';st.textContent='✓ Tamamlandı';st.className='mfi-status done';loadTransferFiles()}else{st.textContent='⚠ Hata';st.className='mfi-status err'}};xhr.onerror=()=>{document.getElementById('st-'+id).textContent='⚠ Bağlantı hatası';document.getElementById('st-'+id).className='mfi-status err'};xhr.send(fd)})}
+
+// ===== TODO =====
+let todos=[];
+async function initTodo(){try{const res=await fetch('/todos');todos=await res.json();renderTodos()}catch(e){console.error('Todo yüklenemedi',e)}}
+function renderTodos(){const list=document.getElementById('todo-list');if(!todos.length){list.innerHTML='<div class="todo-empty">Henüz görev yok — yukarıdan ekle</div>'}else{list.innerHTML=todos.map(t=>`<div class="todo-item${t.done?' done':''}" id="ti-${t.id}" onclick="toggleTodo('${t.id}')"><div class="todo-check"><svg class="todo-check-tick" viewBox="0 0 10 10" fill="none"><path d="M1.5 5l2.5 2.5 4.5-4" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="todo-text">${escHtml(t.text)}</div><button class="todo-del" onclick="event.stopPropagation();deleteTodo('${t.id}')" title="Sil">✕</button></div>`).join('')}const total=todos.length;const done=todos.filter(t=>t.done).length;const left=total-done;document.getElementById('todo-count').textContent=total===0?'0 görev':`${total} görev · ${done} tamamlandı`;document.getElementById('ts-total').textContent=total;document.getElementById('ts-done').textContent=done;document.getElementById('ts-left').textContent=left}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+async function addTodo(){const input=document.getElementById('todo-input');const text=input.value.trim();if(!text)return;input.value='';try{const res=await fetch('/todos/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});const todo=await res.json();if(todo.error)return;todos.push(todo);renderTodos();const el=document.getElementById('ti-'+todo.id);if(el){el.style.opacity='0';el.style.transform='translateY(-8px)';requestAnimationFrame(()=>{el.style.transition='opacity .2s,transform .2s';el.style.opacity='1';el.style.transform='none'})}}catch(e){}}
+async function toggleTodo(id){try{const res=await fetch(`/todos/toggle/${id}`,{method:'POST'});const updated=await res.json();todos=todos.map(t=>t.id===id?updated:t);renderTodos()}catch(e){}}
+async function deleteTodo(id){try{await fetch(`/todos/delete/${id}`,{method:'POST'});todos=todos.filter(t=>t.id!==id);renderTodos()}catch(e){}}
+async function clearTodos(){if(!todos.length)return;if(!confirm('Tüm görevler silinsin mi?'))return;try{await fetch('/todos/clear',{method:'POST'});todos=[];renderTodos()}catch(e){}}
+document.getElementById('url-input').addEventListener('keydown',e=>{if(e.key==='Enter')fetchInfo()});
+
+// ===== CLIPBOARD =====
+let _cbPoll=null,_cbLast=null;
+async function initClipboard(){try{const r=await fetch('/clipboard/qr'),d=await r.json();if(d.error)document.getElementById('cb-qr-url').textContent=d.error;else{document.getElementById('cb-qr-img').src=d.qr;document.getElementById('cb-qr-url').textContent=d.url}}catch(e){document.getElementById('cb-qr-url').textContent='Sunucuya bağlanılamadı'}if(_cbPoll)clearInterval(_cbPoll);_cbPoll=setInterval(cbPollFn,2000);cbPollFn()}
+async function cbPollFn(){try{const r=await fetch('/clipboard/receive'),d=await r.json(),t=d.text||'';const el=document.getElementById('cb-recv-text'),ind=document.getElementById('cb-live-ind');if(t!==_cbLast){_cbLast=t;el.value=t;if(t){ind.style.color='var(--accent)';setTimeout(()=>{ind.style.color=''},700)}}}catch(e){}}
+async function cbSend(){const t=document.getElementById('cb-send-input').value,s=document.getElementById('cb-send-status');try{const r=await fetch('/clipboard/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})});const d=await r.json();if(d.ok){s.textContent='✓ Gönderildi';s.className='cb-status ok';document.getElementById('cb-recv-text').value=t;_cbLast=t}}catch(e){s.textContent='⚠ Gönderilemedi';s.className='cb-status err'}setTimeout(()=>{s.textContent='';s.className='cb-status'},2800)}
+async function cbCopyReceived(){const t=document.getElementById('cb-recv-text').value,s=document.getElementById('cb-recv-status');if(!t){s.textContent='Metin yok';s.className='cb-status err';setTimeout(()=>{s.textContent='';s.className='cb-status'},2000);return}try{await navigator.clipboard.writeText(t);s.textContent='✓ Kopyalandı';s.className='cb-status ok'}catch(e){s.textContent='⚠ Başarısız';s.className='cb-status err'}setTimeout(()=>{s.textContent='';s.className='cb-status'},2800)}
+
+// ===== CAMERA =====
+let _camConn=false,_camRec=false,_camStatInt=null;
+async function initCamera(){try{const r=await fetch('/camera/qr'),d=await r.json();if(d.error)document.getElementById('cam-qr-url').textContent=d.error;else{document.getElementById('cam-qr-img').src=d.qr;document.getElementById('cam-qr-url').textContent=d.url}}catch(e){document.getElementById('cam-qr-url').textContent='Sunucuya bağlanılamadı'}const img=document.getElementById('cam-feed-img'),ph=document.getElementById('cam-feed-ph');img.onload=()=>{img.style.display='block';ph.style.display='none';if(!_camConn){_camConn=true;document.getElementById('cam-conn-badge').style.display='';document.getElementById('cam-rec-btn').disabled=false;document.getElementById('cam-status-v').textContent='Bağlı'}};img.onerror=()=>{_camConn=false;document.getElementById('cam-conn-badge').style.display='none';document.getElementById('cam-rec-btn').disabled=true;document.getElementById('cam-status-v').textContent='Bağlantı yok'};img.src='/camera/stream?t='+Date.now();if(_camStatInt)clearInterval(_camStatInt);_camStatInt=setInterval(camPollStat,1500);loadCamRecordings()}
+async function camPollStat(){try{const r=await fetch('/camera/record/status'),d=await r.json();_camRec=d.recording;const btn=document.getElementById('cam-rec-btn');const badge=document.getElementById('cam-rec-badge');if(d.recording){btn.textContent='⏹ KAYDI DURDUR';btn.className='cam-rec-btn recording';badge.style.display='';const m=Math.floor(d.elapsed/60),s=String(Math.floor(d.elapsed%60)).padStart(2,'0');document.getElementById('cam-elapsed-v').textContent=m+':'+s;document.getElementById('cam-frames-v').textContent=d.frame_count}else{btn.textContent='● KAYIT BAŞLAT';btn.className='cam-rec-btn';badge.style.display='none';if(!d.recording&&d.elapsed===0)document.getElementById('cam-elapsed-v').textContent='—'}}catch(e){}}
+async function camToggleRecord(){const st=document.getElementById('cam-rec-status');if(!_camRec){try{const r=await fetch('/camera/record/start',{method:'POST'}),d=await r.json();if(d.ok){_camRec=true;st.textContent='● Kayıt başladı: '+d.filename;st.className='cam-rec-status ok'}else{st.textContent='⚠ '+d.error;st.className='cam-rec-status err'}}catch(e){st.textContent='⚠ Sunucu hatası';st.className='cam-rec-status err'}}else{try{const r=await fetch('/camera/record/stop',{method:'POST'}),d=await r.json();if(d.ok){_camRec=false;st.textContent='✓ Kaydedildi: '+d.filename+' ('+d.duration+'s)';st.className='cam-rec-status ok';document.getElementById('cam-elapsed-v').textContent='—';loadCamRecordings()}else{st.textContent='⚠ '+d.error;st.className='cam-rec-status err'}}catch(e){st.textContent='⚠ Sunucu hatası';st.className='cam-rec-status err'}}setTimeout(()=>{if(!_camRec){st.textContent='';st.className='cam-rec-status'}},6000)}
+async function loadCamRecordings(){const list=document.getElementById('cam-rec-list');try{const r=await fetch('/camera/recordings'),d=await r.json();if(!d.files||!d.files.length){list.innerHTML='<div class="cam-rec-empty">Henüz kayıt yok</div>';return}list.innerHTML=d.files.map(f=>{const sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';return`<div class="cam-rec-item"><div class="cam-rec-name">${f.name}</div><div class="cam-rec-size">${sz}</div><a class="cam-rec-dl" href="/camera/recordings/${f.name}" download="${f.name}">⬇</a></div>`}).join('')}catch(e){list.innerHTML='<div class="cam-rec-empty">Yüklenemedi</div>'}}
+
+// ===== MIRROR =====
+let _mirrorSelected=null;
+async function initMirror(){await mirrorCheckStatus();await mirrorRefreshDevices()}
+async function mirrorCheckStatus(){try{const r=await fetch('/mirror/status');const d=await r.json();const ds=document.getElementById('m-dot-scrcpy');document.getElementById('m-val-scrcpy').textContent=d.scrcpy_found?'Kurulu ✓':'Bulunamadı ✗';ds.textContent=d.scrcpy_found?'●':'○';ds.className='mirror-status-dot '+(d.scrcpy_found?'ok':'err');document.getElementById('m-path-scrcpy').textContent=d.scrcpy_path||'—';const da=document.getElementById('m-dot-adb');document.getElementById('m-val-adb').textContent=d.adb_found?'Kurulu ✓':'Bulunamadı ✗';da.textContent=d.adb_found?'●':'○';da.className='mirror-status-dot '+(d.adb_found?'ok':'err');document.getElementById('m-path-adb').textContent=d.adb_path||'—';const dd=document.getElementById('m-dot-dev');document.getElementById('m-val-dev').textContent=d.devices.length?d.devices.join(', '):'Bağlı cihaz yok';dd.textContent=d.devices.length?'●':'○';dd.className='mirror-status-dot '+(d.devices.length?'ok':'');const dr=document.getElementById('m-dot-run');document.getElementById('m-val-run').textContent=d.running?'Çalışıyor ●':'Kapalı';dr.textContent=d.running?'●':'○';dr.className='mirror-status-dot '+(d.running?'ok':'');if(d.running){document.getElementById('mirror-start-btn').style.display='none';document.getElementById('mirror-stop-btn').style.display=''}}catch(e){}}
+async function mirrorRefreshDevices(){const list=document.getElementById('mirror-device-list');list.innerHTML='<div class="mirror-empty">Taranıyor...</div>';try{const r=await fetch('/mirror/adb/devices');const d=await r.json();if(!d.ok||!d.devices.length){list.innerHTML='<div class="mirror-empty">'+(d.error||'Bağlı USB cihazı yok')+'</div>';return}list.innerHTML=d.devices.map(dev=>{const label=dev.model||dev.serial;const extra=[dev.product,dev.transport_id].filter(Boolean).join(' · ');return`<div class="mirror-device-item${_mirrorSelected===dev.serial?' selected':''}" onclick="mirrorSelectDevice('${dev.serial}',this)"><div><div class="mirror-device-serial">${dev.serial}</div><div class="mirror-device-info">${label}${extra?' — '+extra:''}</div></div></div>`}).join('');if(d.devices.length===1)mirrorSelectDevice(d.devices[0].serial,list.querySelector('.mirror-device-item'))}catch(e){list.innerHTML='<div class="mirror-empty">adb bağlantı hatası</div>'}}
+function mirrorSelectDevice(serial,el){_mirrorSelected=serial;document.querySelectorAll('.mirror-device-item').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
+async function mirrorStart(){const log=document.getElementById('mirror-main-log');log.textContent='Başlatılıyor...';log.className='mirror-log';const body={bitrate:document.getElementById('m-bitrate').value,maxfps:document.getElementById('m-fps').value,maxsize:document.getElementById('m-size').value};if(_mirrorSelected)body.serial=_mirrorSelected;try{const r=await fetch('/mirror/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.ok){log.textContent='✓ Başlatıldı (PID '+d.pid+')';log.className='mirror-log ok';document.getElementById('mirror-start-btn').style.display='none';document.getElementById('mirror-stop-btn').style.display='';document.getElementById('m-dot-run').textContent='●';document.getElementById('m-dot-run').className='mirror-status-dot ok';document.getElementById('m-val-run').textContent='Çalışıyor ●'}else{log.textContent='⚠ '+d.error;log.className='mirror-log err'}}catch(e){log.textContent='⚠ Sunucu hatası';log.className='mirror-log err'}}
+async function mirrorStop(){const log=document.getElementById('mirror-main-log');log.textContent='Durduruluyor...';log.className='mirror-log';try{await fetch('/mirror/stop',{method:'POST'});log.textContent='Durduruldu.';log.className='mirror-log';document.getElementById('mirror-start-btn').style.display='';document.getElementById('mirror-stop-btn').style.display='none';document.getElementById('m-dot-run').textContent='○';document.getElementById('m-dot-run').className='mirror-status-dot';document.getElementById('m-val-run').textContent='Kapalı'}catch(e){}}
+async function mirrorTcpip(){const log=document.getElementById('mirror-wifi-log');log.textContent='TCP/IP etkinleştiriliyor...';log.className='mirror-log';try{const body=_mirrorSelected?{serial:_mirrorSelected}:{};const r=await fetch('/mirror/adb/tcpip',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();log.textContent=d.ok?'✓ TCP/IP etkinleştirildi. USB\'yi çıkarabilirsiniz.':'⚠ '+d.output;log.className='mirror-log '+(d.ok?'ok':'err')}catch(e){log.textContent='⚠ Hata';log.className='mirror-log err'}}
+async function mirrorWifiConnect(){const ip=document.getElementById('mirror-wifi-ip').value.trim();const log=document.getElementById('mirror-wifi-log');if(!ip){log.textContent='⚠ IP adresi girin';log.className='mirror-log err';return}log.textContent='Bağlanıyor '+ip+'...';log.className='mirror-log';try{const r=await fetch('/mirror/adb/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip})});const d=await r.json();log.textContent=d.ok?'✓ Bağlandı! Cihazları Tara butonuna bas.':'⚠ '+d.output;log.className='mirror-log '+(d.ok?'ok':'err');if(d.ok)mirrorRefreshDevices()}catch(e){log.textContent='⚠ Hata';log.className='mirror-log err'}}
+</script>
+</body>
+</html>
