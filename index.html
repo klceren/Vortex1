@@ -412,8 +412,6 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
   <button class="tab-btn" onclick="switchTab('transfer',this);initTransfer()">📡 TRANSFER</button>
   <button class="tab-btn" onclick="switchTab('todo',this);initTodo()">✅ GÖREVLER</button>
   <button class="tab-btn" onclick="switchTab('clipboard',this);initClipboard()">📋 PANO</button>
-  <button class="tab-btn" onclick="switchTab('camera',this);initCamera()">📷 KAMERA</button>
-  <button class="tab-btn" onclick="switchTab('mirror',this);initMirror()">🖥 EKRAN</button>
 </div>
 
 <main>
@@ -431,7 +429,7 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
   <!-- STATS -->
   <div class="home-stats">
     <div class="home-stat"><div class="home-stat-val">500+</div><div class="home-stat-key">Desteklenen Site</div></div>
-    <div class="home-stat"><div class="home-stat-val">9</div><div class="home-stat-key">Araç</div></div>
+    <div class="home-stat"><div class="home-stat-val">7</div><div class="home-stat-key">Araç</div></div>
     <div class="home-stat"><div class="home-stat-val">∞</div><div class="home-stat-key">Sınırsız İndirme</div></div>
     <div class="home-stat"><div class="home-stat-val">0</div><div class="home-stat-key">Reklam / Ücret</div></div>
   </div>
@@ -439,7 +437,7 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
   <!-- TOOL CARDS -->
   <div class="home-tools-label">
     <span>Araçlar</span>
-    <span>9 modül</span>
+    <span>7 modül</span>
   </div>
   <div class="tools-grid">
 
@@ -485,19 +483,6 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
       <div class="tool-card-tag">Canlı · QR · Anlık</div>
     </div>
 
-    <div class="tool-card" onclick="switchTabByName('camera')">
-      <div class="tool-card-icon">📷</div>
-      <div class="tool-card-name">KAMERA</div>
-      <div class="tool-card-desc">Telefonunu uzak kamera olarak kullan. Canlı görüntü izle, kayıt al ve bilgisayara aktar.</div>
-      <div class="tool-card-tag">MJPEG · Canlı kayıt</div>
-    </div>
-
-    <div class="tool-card" onclick="switchTabByName('mirror')">
-      <div class="tool-card-icon">🖥</div>
-      <div class="tool-card-name">EKRAN YANSIT</div>
-      <div class="tool-card-desc">Android ekranını USB veya Wi-Fi üzerinden bilgisayara yansıt. scrcpy tabanlı, düşük gecikme.</div>
-      <div class="tool-card-tag">scrcpy · ADB · Wi-Fi</div>
-    </div>
 
     <div class="tool-card" onclick="switchTabByName('dice')">
       <div class="tool-card-icon">🎲</div>
@@ -744,122 +729,6 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
   </div>
 </div>
 
-<!-- ===== CAMERA ===== -->
-<div id="tab-camera" class="tab-panel">
-  <h1 class="headline">UZAKTAN<br><em>KAMERA.</em></h1>
-  <div class="cam-layout">
-    <div>
-      <div class="cam-feed-wrap" id="cam-feed-wrap">
-        <img id="cam-feed-img" src="" alt="" style="display:none;width:100%;height:100%;object-fit:cover">
-        <div class="cam-feed-ph" id="cam-feed-ph">📷 Telefon QR'ı okutunca<br>görüntü burada görünür</div>
-        <div class="cam-overlay">
-          <span class="cam-badge connected" id="cam-conn-badge" style="display:none">● BAĞLI</span>
-          <span class="cam-badge live" id="cam-rec-badge" style="display:none">● KAYIT</span>
-        </div>
-      </div>
-      <button class="cam-rec-btn" id="cam-rec-btn" onclick="camToggleRecord()" disabled>● KAYIT BAŞLAT</button>
-      <div class="cam-rec-status" id="cam-rec-status"></div>
-      <div class="cam-rec-list-title">
-        <span>Kaydedilenler</span>
-        <button class="refresh-btn" onclick="loadCamRecordings()">↻ Yenile</button>
-      </div>
-      <div id="cam-rec-list"><div class="cam-rec-empty">Henüz kayıt yok</div></div>
-    </div>
-    <div class="cam-sidebar">
-      <div class="cam-qr-box">
-        <img id="cam-qr-img" src="" alt="QR" style="width:150px;height:150px;image-rendering:pixelated">
-        <div class="cam-qr-hint"><span class="pulse-dot"></span>Telefon kamerası için tara</div>
-        <div class="cam-qr-url" id="cam-qr-url">Yükleniyor...</div>
-      </div>
-      <div class="cam-stats">
-        <div class="cam-stat-row"><span class="cam-stat-k">Durum</span><span class="cam-stat-v" id="cam-status-v">Bekleniyor</span></div>
-        <div class="cam-stat-row"><span class="cam-stat-k">Süre</span><span class="cam-stat-v acc" id="cam-elapsed-v">—</span></div>
-        <div class="cam-stat-row"><span class="cam-stat-k">Kare</span><span class="cam-stat-v" id="cam-frames-v">0</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ===== MIRROR ===== -->
-<div id="tab-mirror" class="tab-panel">
-  <h1 class="headline">SCRCPY<br><em>YANSIТ.</em></h1>
-  <div class="mirror-status-bar" id="mirror-status-bar">
-    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-scrcpy">○</span><span class="mirror-stat-k">scrcpy</span><span class="mirror-stat-v" id="m-val-scrcpy">Kontrol ediliyor...</span></div>
-    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-adb">○</span><span class="mirror-stat-k">adb</span><span class="mirror-stat-v" id="m-val-adb">Kontrol ediliyor...</span></div>
-    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-dev">○</span><span class="mirror-stat-k">Cihaz</span><span class="mirror-stat-v" id="m-val-dev">—</span></div>
-    <div class="mirror-status-item"><span class="mirror-status-dot" id="m-dot-run">○</span><span class="mirror-stat-k">Yansıtma</span><span class="mirror-stat-v" id="m-val-run">Kapalı</span></div>
-  </div>
-  <div class="mirror-layout">
-    <div>
-      <div class="mirror-section">
-        <div class="mirror-section-title"><span>🔌</span> USB BAĞLANTI</div>
-        <div class="mirror-device-list" id="mirror-device-list"><div class="mirror-empty">Cihaz aranıyor...</div></div>
-        <button class="mirror-btn" onclick="mirrorRefreshDevices()">↻ Cihazları Tara</button>
-      </div>
-      <div class="mirror-section" style="margin-top:16px">
-        <div class="mirror-section-title"><span>📶</span> WI-FI BAĞLANTI (USB'siz)</div>
-        <div class="mirror-hint-box" style="margin-bottom:10px">
-          1. Önce USB ile bağla → <strong>TCP/IP Etkinleştir</strong> butonuna bas<br>
-          2. USB'yi çıkar → Telefon IP'sini gir → <strong>Bağlan</strong>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:8px">
-          <button class="mirror-btn" style="flex:1" onclick="mirrorTcpip()">USB → TCP/IP Etkinleştir</button>
-        </div>
-        <div style="display:flex;gap:8px">
-          <input id="mirror-wifi-ip" class="mirror-input" placeholder="192.168.1.x" style="flex:1">
-          <button class="mirror-btn" style="width:90px" onclick="mirrorWifiConnect()">Bağlan</button>
-        </div>
-        <div class="mirror-log" id="mirror-wifi-log"></div>
-      </div>
-      <div class="mirror-section" style="margin-top:16px">
-        <div class="mirror-section-title"><span>⚙</span> AYARLAR</div>
-        <div class="mirror-settings-grid">
-          <div><label class="mirror-label">Bitrate</label>
-            <select class="mirror-select" id="m-bitrate">
-              <option value="4M">4 Mbps</option>
-              <option value="8M" selected>8 Mbps</option>
-              <option value="16M">16 Mbps</option>
-              <option value="32M">32 Mbps (Max)</option>
-            </select></div>
-          <div><label class="mirror-label">Max FPS</label>
-            <select class="mirror-select" id="m-fps">
-              <option value="30">30 FPS</option>
-              <option value="60" selected>60 FPS</option>
-            </select></div>
-          <div><label class="mirror-label">Çözünürlük</label>
-            <select class="mirror-select" id="m-size">
-              <option value="720">720p</option>
-              <option value="1080" selected>1080p</option>
-              <option value="1440">1440p</option>
-            </select></div>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:16px">
-        <button class="mirror-start-btn" id="mirror-start-btn" onclick="mirrorStart()">▶ YANSITMAYI BAŞLAT</button>
-        <button class="mirror-stop-btn" id="mirror-stop-btn" onclick="mirrorStop()" style="display:none">■ DURDUR</button>
-      </div>
-      <div class="mirror-log" id="mirror-main-log"></div>
-    </div>
-    <div class="mirror-sidebar">
-      <div class="mirror-install-box">
-        <div class="mirror-section-title"><span>📦</span> KURULUM</div>
-        <div class="mirror-install-step"><strong>1. scrcpy indir</strong><br>
-          <a href="https://github.com/Genymobile/scrcpy/releases" target="_blank" class="mirror-link">github.com/Genymobile/scrcpy</a><br>
-          <span style="color:#444">ZIP'i çıkar, PATH'e ekle veya app.py yanına koy</span>
-        </div>
-        <div class="mirror-install-step"><strong>2. Telefonda USB hata ayıklama aç</strong><br>
-          <span style="color:#444">Ayarlar → Geliştirici seçenekleri → USB hata ayıklama</span>
-        </div>
-        <div class="mirror-install-step"><strong>3. USB ile bağla</strong><br>
-          <span style="color:#444">Telefonda "İzin ver" de → Cihazları Tara</span>
-        </div>
-      </div>
-      <div class="mirror-stats" style="margin-top:12px">
-        <div class="mirror-stat-row"><span class="mirror-stat-k">scrcpy</span><span class="mirror-stat-v acc" id="m-path-scrcpy" style="font-size:.5rem;word-break:break-all">—</span></div>
-        <div class="mirror-stat-row"><span class="mirror-stat-k">adb</span><span class="mirror-stat-v acc" id="m-path-adb" style="font-size:.5rem;word-break:break-all">—</span></div>
-      </div>
-    </div>
-  </div>
 </div>
 
 </main>
@@ -991,23 +860,6 @@ async function cbPollFn(){try{const r=await fetch('/clipboard/receive'),d=await 
 async function cbSend(){const t=document.getElementById('cb-send-input').value,s=document.getElementById('cb-send-status');try{const r=await fetch('/clipboard/send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:t})});const d=await r.json();if(d.ok){s.textContent='✓ Gönderildi';s.className='cb-status ok';document.getElementById('cb-recv-text').value=t;_cbLast=t}}catch(e){s.textContent='⚠ Gönderilemedi';s.className='cb-status err'}setTimeout(()=>{s.textContent='';s.className='cb-status'},2800)}
 async function cbCopyReceived(){const t=document.getElementById('cb-recv-text').value,s=document.getElementById('cb-recv-status');if(!t){s.textContent='Metin yok';s.className='cb-status err';setTimeout(()=>{s.textContent='';s.className='cb-status'},2000);return}try{await navigator.clipboard.writeText(t);s.textContent='✓ Kopyalandı';s.className='cb-status ok'}catch(e){s.textContent='⚠ Başarısız';s.className='cb-status err'}setTimeout(()=>{s.textContent='';s.className='cb-status'},2800)}
 
-// ===== CAMERA =====
-let _camConn=false,_camRec=false,_camStatInt=null;
-async function initCamera(){try{const r=await fetch('/camera/qr'),d=await r.json();if(d.error)document.getElementById('cam-qr-url').textContent=d.error;else{document.getElementById('cam-qr-img').src=d.qr;document.getElementById('cam-qr-url').textContent=d.url}}catch(e){document.getElementById('cam-qr-url').textContent='Sunucuya bağlanılamadı'}const img=document.getElementById('cam-feed-img'),ph=document.getElementById('cam-feed-ph');img.onload=()=>{img.style.display='block';ph.style.display='none';if(!_camConn){_camConn=true;document.getElementById('cam-conn-badge').style.display='';document.getElementById('cam-rec-btn').disabled=false;document.getElementById('cam-status-v').textContent='Bağlı'}};img.onerror=()=>{_camConn=false;document.getElementById('cam-conn-badge').style.display='none';document.getElementById('cam-rec-btn').disabled=true;document.getElementById('cam-status-v').textContent='Bağlantı yok'};img.src='/camera/stream?t='+Date.now();if(_camStatInt)clearInterval(_camStatInt);_camStatInt=setInterval(camPollStat,1500);loadCamRecordings()}
-async function camPollStat(){try{const r=await fetch('/camera/record/status'),d=await r.json();_camRec=d.recording;const btn=document.getElementById('cam-rec-btn');const badge=document.getElementById('cam-rec-badge');if(d.recording){btn.textContent='⏹ KAYDI DURDUR';btn.className='cam-rec-btn recording';badge.style.display='';const m=Math.floor(d.elapsed/60),s=String(Math.floor(d.elapsed%60)).padStart(2,'0');document.getElementById('cam-elapsed-v').textContent=m+':'+s;document.getElementById('cam-frames-v').textContent=d.frame_count}else{btn.textContent='● KAYIT BAŞLAT';btn.className='cam-rec-btn';badge.style.display='none';if(!d.recording&&d.elapsed===0)document.getElementById('cam-elapsed-v').textContent='—'}}catch(e){}}
-async function camToggleRecord(){const st=document.getElementById('cam-rec-status');if(!_camRec){try{const r=await fetch('/camera/record/start',{method:'POST'}),d=await r.json();if(d.ok){_camRec=true;st.textContent='● Kayıt başladı: '+d.filename;st.className='cam-rec-status ok'}else{st.textContent='⚠ '+d.error;st.className='cam-rec-status err'}}catch(e){st.textContent='⚠ Sunucu hatası';st.className='cam-rec-status err'}}else{try{const r=await fetch('/camera/record/stop',{method:'POST'}),d=await r.json();if(d.ok){_camRec=false;st.textContent='✓ Kaydedildi: '+d.filename+' ('+d.duration+'s)';st.className='cam-rec-status ok';document.getElementById('cam-elapsed-v').textContent='—';loadCamRecordings()}else{st.textContent='⚠ '+d.error;st.className='cam-rec-status err'}}catch(e){st.textContent='⚠ Sunucu hatası';st.className='cam-rec-status err'}}setTimeout(()=>{if(!_camRec){st.textContent='';st.className='cam-rec-status'}},6000)}
-async function loadCamRecordings(){const list=document.getElementById('cam-rec-list');try{const r=await fetch('/camera/recordings'),d=await r.json();if(!d.files||!d.files.length){list.innerHTML='<div class="cam-rec-empty">Henüz kayıt yok</div>';return}list.innerHTML=d.files.map(f=>{const sz=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';return`<div class="cam-rec-item"><div class="cam-rec-name">${f.name}</div><div class="cam-rec-size">${sz}</div><a class="cam-rec-dl" href="/camera/recordings/${f.name}" download="${f.name}">⬇</a></div>`}).join('')}catch(e){list.innerHTML='<div class="cam-rec-empty">Yüklenemedi</div>'}}
-
-// ===== MIRROR =====
-let _mirrorSelected=null;
-async function initMirror(){await mirrorCheckStatus();await mirrorRefreshDevices()}
-async function mirrorCheckStatus(){try{const r=await fetch('/mirror/status');const d=await r.json();const ds=document.getElementById('m-dot-scrcpy');document.getElementById('m-val-scrcpy').textContent=d.scrcpy_found?'Kurulu ✓':'Bulunamadı ✗';ds.textContent=d.scrcpy_found?'●':'○';ds.className='mirror-status-dot '+(d.scrcpy_found?'ok':'err');document.getElementById('m-path-scrcpy').textContent=d.scrcpy_path||'—';const da=document.getElementById('m-dot-adb');document.getElementById('m-val-adb').textContent=d.adb_found?'Kurulu ✓':'Bulunamadı ✗';da.textContent=d.adb_found?'●':'○';da.className='mirror-status-dot '+(d.adb_found?'ok':'err');document.getElementById('m-path-adb').textContent=d.adb_path||'—';const dd=document.getElementById('m-dot-dev');document.getElementById('m-val-dev').textContent=d.devices.length?d.devices.join(', '):'Bağlı cihaz yok';dd.textContent=d.devices.length?'●':'○';dd.className='mirror-status-dot '+(d.devices.length?'ok':'');const dr=document.getElementById('m-dot-run');document.getElementById('m-val-run').textContent=d.running?'Çalışıyor ●':'Kapalı';dr.textContent=d.running?'●':'○';dr.className='mirror-status-dot '+(d.running?'ok':'');if(d.running){document.getElementById('mirror-start-btn').style.display='none';document.getElementById('mirror-stop-btn').style.display=''}}catch(e){}}
-async function mirrorRefreshDevices(){const list=document.getElementById('mirror-device-list');list.innerHTML='<div class="mirror-empty">Taranıyor...</div>';try{const r=await fetch('/mirror/adb/devices');const d=await r.json();if(!d.ok||!d.devices.length){list.innerHTML='<div class="mirror-empty">'+(d.error||'Bağlı USB cihazı yok')+'</div>';return}list.innerHTML=d.devices.map(dev=>{const label=dev.model||dev.serial;const extra=[dev.product,dev.transport_id].filter(Boolean).join(' · ');return`<div class="mirror-device-item${_mirrorSelected===dev.serial?' selected':''}" onclick="mirrorSelectDevice('${dev.serial}',this)"><div><div class="mirror-device-serial">${dev.serial}</div><div class="mirror-device-info">${label}${extra?' — '+extra:''}</div></div></div>`}).join('');if(d.devices.length===1)mirrorSelectDevice(d.devices[0].serial,list.querySelector('.mirror-device-item'))}catch(e){list.innerHTML='<div class="mirror-empty">adb bağlantı hatası</div>'}}
-function mirrorSelectDevice(serial,el){_mirrorSelected=serial;document.querySelectorAll('.mirror-device-item').forEach(i=>i.classList.remove('selected'));if(el)el.classList.add('selected')}
-async function mirrorStart(){const log=document.getElementById('mirror-main-log');log.textContent='Başlatılıyor...';log.className='mirror-log';const body={bitrate:document.getElementById('m-bitrate').value,maxfps:document.getElementById('m-fps').value,maxsize:document.getElementById('m-size').value};if(_mirrorSelected)body.serial=_mirrorSelected;try{const r=await fetch('/mirror/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();if(d.ok){log.textContent='✓ Başlatıldı (PID '+d.pid+')';log.className='mirror-log ok';document.getElementById('mirror-start-btn').style.display='none';document.getElementById('mirror-stop-btn').style.display='';document.getElementById('m-dot-run').textContent='●';document.getElementById('m-dot-run').className='mirror-status-dot ok';document.getElementById('m-val-run').textContent='Çalışıyor ●'}else{log.textContent='⚠ '+d.error;log.className='mirror-log err'}}catch(e){log.textContent='⚠ Sunucu hatası';log.className='mirror-log err'}}
-async function mirrorStop(){const log=document.getElementById('mirror-main-log');log.textContent='Durduruluyor...';log.className='mirror-log';try{await fetch('/mirror/stop',{method:'POST'});log.textContent='Durduruldu.';log.className='mirror-log';document.getElementById('mirror-start-btn').style.display='';document.getElementById('mirror-stop-btn').style.display='none';document.getElementById('m-dot-run').textContent='○';document.getElementById('m-dot-run').className='mirror-status-dot';document.getElementById('m-val-run').textContent='Kapalı'}catch(e){}}
-async function mirrorTcpip(){const log=document.getElementById('mirror-wifi-log');log.textContent='TCP/IP etkinleştiriliyor...';log.className='mirror-log';try{const body=_mirrorSelected?{serial:_mirrorSelected}:{};const r=await fetch('/mirror/adb/tcpip',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const d=await r.json();log.textContent=d.ok?'✓ TCP/IP etkinleştirildi. USB\'yi çıkarabilirsiniz.':'⚠ '+d.output;log.className='mirror-log '+(d.ok?'ok':'err')}catch(e){log.textContent='⚠ Hata';log.className='mirror-log err'}}
-async function mirrorWifiConnect(){const ip=document.getElementById('mirror-wifi-ip').value.trim();const log=document.getElementById('mirror-wifi-log');if(!ip){log.textContent='⚠ IP adresi girin';log.className='mirror-log err';return}log.textContent='Bağlanıyor '+ip+'...';log.className='mirror-log';try{const r=await fetch('/mirror/adb/connect',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ip})});const d=await r.json();log.textContent=d.ok?'✓ Bağlandı! Cihazları Tara butonuna bas.':'⚠ '+d.output;log.className='mirror-log '+(d.ok?'ok':'err');if(d.ok)mirrorRefreshDevices()}catch(e){log.textContent='⚠ Hata';log.className='mirror-log err'}}
 </script>
 </body>
 </html>
