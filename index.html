@@ -247,6 +247,28 @@ select:focus{border-color:var(--accent)}select:disabled{opacity:.4;cursor:not-al
 .tf-dl{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:.08em;padding:5px 10px;border:1px solid var(--border);background:none;color:var(--muted);cursor:pointer;text-decoration:none;text-transform:uppercase;transition:all .15s;flex-shrink:0}
 .tf-dl:hover{border-color:var(--accent);color:var(--accent)}
 .transfer-empty{font-family:'Space Mono',monospace;font-size:.65rem;color:var(--muted);text-align:center;padding:28px 0;letter-spacing:.1em}
+/* ── Transfer Mod Seçici ── */
+.transfer-mode-switcher{display:flex;gap:10px;margin-bottom:24px}
+.tmode-btn{flex:1;padding:13px 10px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.tmode-btn:hover{border-color:var(--text);color:var(--text)}
+.tmode-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,.04)}
+.tmode-icon{font-size:1.5rem;line-height:1}
+.tmode-label{font-size:.52rem;letter-spacing:.14em}
+.tmode-panel{display:none}.tmode-panel.active{display:block}
+/* ── Tel-Tel Panel ── */
+.tt-info-box{background:var(--card);border:1px solid var(--border);padding:18px;margin-bottom:20px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center}
+.tt-qr-box{background:#111;border:1px solid #222;padding:14px;display:inline-block}
+.tt-qr-box img{display:block;width:190px;height:190px;image-rendering:pixelated}
+.tt-url{font-family:'Space Mono',monospace;font-size:.62rem;color:var(--accent);word-break:break-all;max-width:320px}
+.tt-hint{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.08em;line-height:1.8;border-left:2px solid var(--border);padding-left:12px;text-align:left;max-width:360px}
+.tt-hint strong{color:var(--text)}
+.tt-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+@media(max-width:500px){.tt-steps{grid-template-columns:1fr}}
+.tt-step{background:var(--card);border:1px solid var(--border);padding:16px;display:flex;flex-direction:column;gap:8px}
+.tt-step-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:var(--border);line-height:1;transition:color .2s}
+.tt-step:hover .tt-step-num{color:var(--accent)}
+.tt-step-title{font-family:'Space Mono',monospace;font-size:.6rem;color:var(--text);letter-spacing:.06em}
+.tt-step-sub{font-family:'Space Mono',monospace;font-size:.54rem;color:var(--muted);line-height:1.7}
 .transfer-mobile-wrap{display:none;flex-direction:column;gap:16px;margin-bottom:28px}
 .transfer-mobile-wrap.visible{display:flex}
 .mobile-drop{border:2px dashed var(--border);padding:44px 24px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;position:relative}
@@ -648,40 +670,104 @@ footer{text-align:center;padding:36px;font-family:'Space Mono',monospace;font-si
 <!-- ===== TRANSFER ===== -->
 <div id="tab-transfer" class="tab-panel">
   <h1 class="headline">DOSYA<br><em>TRANSFER.</em></h1>
-  <div class="transfer-grid">
-    <div class="transfer-card">
-      <div class="transfer-card-title"><span class="tc-icon">📱→💻</span> TELEFONA GÖNDER</div>
-      <div class="transfer-card-sub">QR'ı okut, telefondan indir</div>
-      <div class="drop-zone tc-drop" id="tc-drop">
-        <input type="file" multiple onchange="tcAddFiles(this.files)">
-        <div class="drop-icon">📂</div>
-        <div class="drop-label"><strong>Dosya ekle</strong> veya sürükle</div>
-        <div class="drop-filename" id="tc-drop-hint"></div>
-      </div>
-      <div class="qr-wrap" id="qr-wrap">
-        <div class="qr-box"><img id="qr-img" src="" alt="" width="180" height="180"></div>
-        <div class="qr-url" id="qr-url">Yükleniyor...</div>
-        <div class="qr-hint">Telefon aynı Wi-Fi'da olmalı</div>
-      </div>
-      <div class="transfer-mobile-wrap" id="transfer-mobile-wrap">
-        <div class="mobile-drop" id="mobile-drop">
-          <input type="file" multiple onchange="mobileUpload(this.files)">
-          <div style="font-size:2rem;margin-bottom:8px">📤</div>
-          <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:.1em">Dosya seç veya sürükle</div>
+
+  <!-- MOD SEÇİCİ -->
+  <div class="transfer-mode-switcher">
+    <button class="tmode-btn active" id="tmode-pc" onclick="switchTransferMode('pc')">
+      <span class="tmode-icon">💻📱</span>
+      <span class="tmode-label">PC ↔ TELEFON</span>
+    </button>
+    <button class="tmode-btn" id="tmode-tt" onclick="switchTransferMode('tt')">
+      <span class="tmode-icon">📱📱</span>
+      <span class="tmode-label">TEL ↔ TEL</span>
+    </button>
+  </div>
+
+  <!-- ── PC ↔ TELEFON MODU ── -->
+  <div class="tmode-panel active" id="tmode-panel-pc">
+    <div class="transfer-grid">
+      <div class="transfer-card">
+        <div class="transfer-card-title"><span class="tc-icon">📱→💻</span> TELEFONA GÖNDER</div>
+        <div class="transfer-card-sub">QR'ı okut, telefondan indir</div>
+        <div class="drop-zone tc-drop" id="tc-drop">
+          <input type="file" multiple onchange="tcAddFiles(this.files)">
+          <div class="drop-icon">📂</div>
+          <div class="drop-label"><strong>Dosya ekle</strong> veya sürükle</div>
+          <div class="drop-filename" id="tc-drop-hint"></div>
         </div>
-        <div class="mobile-file-list" id="mobile-file-list"></div>
+        <div class="qr-wrap" id="qr-wrap">
+          <div class="qr-box"><img id="qr-img" src="" alt="" width="180" height="180"></div>
+          <div class="qr-url" id="qr-url">Yükleniyor...</div>
+          <div class="qr-hint">Telefon aynı Wi-Fi'da olmalı</div>
+        </div>
+        <div class="transfer-mobile-wrap" id="transfer-mobile-wrap">
+          <div class="mobile-drop" id="mobile-drop">
+            <input type="file" multiple onchange="mobileUpload(this.files)">
+            <div style="font-size:2rem;margin-bottom:8px">📤</div>
+            <div style="font-family:'Space Mono',monospace;font-size:.75rem;color:var(--muted);letter-spacing:.1em">Dosya seç veya sürükle</div>
+          </div>
+          <div class="mobile-file-list" id="mobile-file-list"></div>
+        </div>
       </div>
-    </div>
-    <div class="transfer-card">
-      <div class="transfer-card-title"><span class="tc-icon">💻→📱</span> PAYLAŞILAN DOSYALAR</div>
-      <div class="transfer-card-sub">Telefon ↔ Bilgisayar ortak alan</div>
-      <div class="transfer-files-title" style="margin-top:16px">
-        <span>Dosyalar</span>
-        <button class="refresh-btn" onclick="loadTransferFiles()">↻ Yenile</button>
+      <div class="transfer-card">
+        <div class="transfer-card-title"><span class="tc-icon">💻→📱</span> PAYLAŞILAN DOSYALAR</div>
+        <div class="transfer-card-sub">Telefon ↔ Bilgisayar ortak alan</div>
+        <div class="transfer-files-title" style="margin-top:16px">
+          <span>Dosyalar</span>
+          <button class="refresh-btn" onclick="loadTransferFiles()">↻ Yenile</button>
+        </div>
+        <div id="transfer-file-list"><div class="transfer-empty">Henüz dosya yok</div></div>
       </div>
-      <div id="transfer-file-list"><div class="transfer-empty">Henüz dosya yok</div></div>
     </div>
   </div>
+
+  <!-- ── TEL ↔ TEL MODU ── -->
+  <div class="tmode-panel" id="tmode-panel-tt">
+    <!-- Adım rehberi -->
+    <div class="tt-steps">
+      <div class="tt-step">
+        <div class="tt-step-num">01</div>
+        <div class="tt-step-title">1. Telefon — QR Tara</div>
+        <div class="tt-step-sub">Aşağıdaki QR kodunu 1. telefon ile tara. Transfer sayfası açılır.</div>
+      </div>
+      <div class="tt-step">
+        <div class="tt-step-num">02</div>
+        <div class="tt-step-title">1. Telefon — Dosya Yükle</div>
+        <div class="tt-step-sub">Açılan sayfada "Bilgisayara Gönder" bölümünden istediğin dosyayı yükle.</div>
+      </div>
+      <div class="tt-step">
+        <div class="tt-step-num">03</div>
+        <div class="tt-step-title">2. Telefon — QR Tara</div>
+        <div class="tt-step-sub">Aynı QR kodu 2. telefon ile de tara. Aynı transfer sayfası açılır.</div>
+      </div>
+      <div class="tt-step">
+        <div class="tt-step-num">04</div>
+        <div class="tt-step-title">2. Telefon — İndir</div>
+        <div class="tt-step-sub">"Bilgisayardan İndir" bölümünde yüklenen dosyayı göreceksin. ⬇ İndir'e bas.</div>
+      </div>
+    </div>
+    <!-- QR Kodu -->
+    <div class="tt-info-box">
+      <div style="font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase">Her İki Telefon Bu Kodu Tarasın</div>
+      <div class="tt-qr-box"><img id="tt-qr-img" src="" alt="QR" width="190" height="190"></div>
+      <div class="tt-url" id="tt-qr-url">Yükleniyor...</div>
+      <div class="tt-hint">
+        <strong>Not:</strong> Her iki telefon da <strong>aynı ağda</strong> (Wi-Fi) olmalıdır.<br>
+        Sunucu Render üzerinde çalışıyorsa Wi-Fi şartı yoktur — internet bağlantısı yeterlidir.
+      </div>
+    </div>
+    <!-- Paylaşılan dosyalar (tel-tel için de göster) -->
+    <div class="transfer-card" style="margin-bottom:16px">
+      <div class="transfer-card-title"><span class="tc-icon">📁</span> AKTARILAN DOSYALAR</div>
+      <div class="transfer-card-sub">Her iki telefon da bu listeden indirebilir</div>
+      <div class="transfer-files-title" style="margin-top:16px">
+        <span>Dosyalar</span>
+        <button class="refresh-btn" onclick="loadTTFiles()">↻ Yenile</button>
+      </div>
+      <div id="tt-file-list"><div class="transfer-empty">Henüz dosya yok</div></div>
+    </div>
+  </div>
+
 </div>
 
 <!-- ===== TODO ===== -->
@@ -836,7 +922,44 @@ function updateDiceUI(){document.getElementById('stat-total').textContent=diceSt
 
 // ===== TRANSFER =====
 const isMobile=/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-function initTransfer(){if(isMobile){document.getElementById('qr-wrap').style.display='none';document.getElementById('transfer-mobile-wrap').classList.add('visible')}else{loadQR()}loadTransferFiles();const tcDrop=document.getElementById('tc-drop');if(tcDrop){tcDrop.addEventListener('dragover',e=>{e.preventDefault();tcDrop.classList.add('drag-over')});tcDrop.addEventListener('dragleave',()=>tcDrop.classList.remove('drag-over'));tcDrop.addEventListener('drop',e=>{e.preventDefault();tcDrop.classList.remove('drag-over');tcAddFiles(e.dataTransfer.files)})}}
+let _currentTransferMode='pc';
+function switchTransferMode(mode){
+  _currentTransferMode=mode;
+  document.getElementById('tmode-pc').classList.toggle('active',mode==='pc');
+  document.getElementById('tmode-tt').classList.toggle('active',mode==='tt');
+  document.getElementById('tmode-panel-pc').classList.toggle('active',mode==='pc');
+  document.getElementById('tmode-panel-tt').classList.toggle('active',mode==='tt');
+  if(mode==='tt'){loadTTQR();loadTTFiles();}
+}
+function initTransfer(){
+  if(isMobile){document.getElementById('qr-wrap').style.display='none';document.getElementById('transfer-mobile-wrap').classList.add('visible')}
+  else{loadQR()}
+  loadTransferFiles();
+  const tcDrop=document.getElementById('tc-drop');
+  if(tcDrop){tcDrop.addEventListener('dragover',e=>{e.preventDefault();tcDrop.classList.add('drag-over')});tcDrop.addEventListener('dragleave',()=>tcDrop.classList.remove('drag-over'));tcDrop.addEventListener('drop',e=>{e.preventDefault();tcDrop.classList.remove('drag-over');tcAddFiles(e.dataTransfer.files)})}
+}
+async function loadTTQR(){
+  try{
+    const res=await fetch('/transfer/qr');
+    const data=await res.json();
+    if(data.error){document.getElementById('tt-qr-url').textContent=data.error;return}
+    document.getElementById('tt-qr-img').src=data.qr;
+    document.getElementById('tt-qr-url').textContent=data.url;
+  }catch(e){document.getElementById('tt-qr-url').textContent='Sunucuya bağlanılamadı'}
+}
+async function loadTTFiles(){
+  const list=document.getElementById('tt-file-list');
+  try{
+    const res=await fetch('/transfer/files');
+    const data=await res.json();
+    if(!data.files.length){list.innerHTML='<div class="transfer-empty">Henüz dosya yok</div>';return}
+    list.innerHTML=data.files.map(f=>{
+      const displayName=f.name.includes('_')?f.name.split('_').slice(1).join('_'):f.name;
+      const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';
+      return`<div class="transfer-file-item"><div class="tf-name">${displayName}</div><div class="tf-size">${size}</div><a class="tf-dl" href="/transfer/files/${f.name}" download="${displayName}">⬇ İndir</a></div>`;
+    }).join('');
+  }catch(e){list.innerHTML='<div class="transfer-empty">Hata oluştu</div>'}
+}
 async function loadQR(){try{const res=await fetch('/transfer/qr');const data=await res.json();if(data.error){document.getElementById('qr-url').textContent=data.error;return}document.getElementById('qr-img').src=data.qr;document.getElementById('qr-url').textContent=data.url}catch(e){document.getElementById('qr-url').textContent='Sunucuya bağlanılamadı'}}
 function tcAddFiles(files){const hint=document.getElementById('tc-drop-hint');hint.textContent=`${files.length} dosya yükleniyor...`;[...files].forEach(file=>{const fd=new FormData();fd.append('file',file);const xhr=new XMLHttpRequest();xhr.open('POST','/transfer/upload');xhr.onload=()=>{if(xhr.status===200){loadTransferFiles();hint.textContent='✓ '+file.name+' eklendi'}else{hint.textContent='⚠ Hata: '+file.name}};xhr.onerror=()=>{hint.textContent='⚠ Bağlantı hatası'};xhr.send(fd)})}
 async function loadTransferFiles(){const list=document.getElementById('transfer-file-list');try{const res=await fetch('/transfer/files');const data=await res.json();if(!data.files.length){list.innerHTML='<div class="transfer-empty">Henüz dosya yok</div>';return}list.innerHTML=data.files.map(f=>{const displayName=f.name.includes('_')?f.name.split('_').slice(1).join('_'):f.name;const size=f.size>1048576?(f.size/1048576).toFixed(1)+' MB':(f.size/1024).toFixed(0)+' KB';return`<div class="transfer-file-item"><div class="tf-name">${displayName}</div><div class="tf-size">${size}</div><a class="tf-dl" href="/transfer/files/${f.name}" download="${displayName}">⬇ İndir</a></div>`}).join('')}catch(e){list.innerHTML='<div class="transfer-empty">Hata oluştu</div>'}}
