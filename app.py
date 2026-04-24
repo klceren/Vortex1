@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, send_file
-import yt_dlp, os, threading, uuid, subprocess, socket, io, base64
+import yt_dlp, os, threading, uuid, subprocess, socket, json as _json_top
 
 def get_local_ip():
     try:
@@ -518,18 +518,13 @@ def _make_qr(path):
         import qrcode as _qrc
     except ImportError:
         return None, None
-    # Render public URL öncelikli — yoksa request context'ten al, o da yoksa local IP
-    host = os.environ.get('RENDER_EXTERNAL_URL') or os.environ.get('HOST_URL', '').rstrip('/')
-    if not host:
-        # Flask request context varsa oradan al (en güvenilir yöntem)
-        try:
-            from flask import request as _req
-            host = _req.host_url.rstrip('/')
-        except Exception:
-            ip   = get_local_ip()
-            port = int(os.environ.get('PORT', 7861))
-            host = f'http://{ip}:{port}'
-    url = host.rstrip('/') + path
+    # Render'da gerçek public URL'i kullan, yoksa local IP'ye düş
+    host = os.environ.get('RENDER_EXTERNAL_URL') or os.environ.get('HOST_URL')
+    if host:
+        url = host.rstrip('/') + path
+    else:
+        ip  = get_local_ip()
+        url = f'https://{ip}:7861{path}'
     qr  = _qrc.QRCode(box_size=8, border=2)
     qr.add_data(url)
     qr.make(fit=True)
@@ -584,6 +579,126 @@ def _ensure_ssl():
             print(f'[SSL] Hata: {e}')
             return None, None
     return cert, key
+
+# ─────────────────────────────────────────────
+# FCM — Firebase Cloud Messaging
+# ─────────────────────────────────────────────
+FCM_TOKENS_FILE = os.path.join(os.path.dirname(__file__), 'fcm_tokens.json')
+_fcm_lock = threading.Lock()
+
+def _load_fcm_tokens():
+    if not os.path.exists(FCM_TOKENS_FILE):
+        return []
+    try:
+        with open(FCM_TOKENS_FILE, 'r', encoding='utf-8') as f:
+            return _json_top.load(f)
+    except Exception:
+        return []
+
+def _save_fcm_tokens(tokens):
+    with open(FCM_TOKENS_FILE, 'w', encoding='utf-8') as f:
+        _json_top.dump(tokens, f, ensure_ascii=False, indent=2)
+
+@app.route('/fcm/register', methods=['POST'])
+def fcm_register():
+    """Android uygulaması FCM token'ını buraya kaydeder."""
+    data = request.json or {}
+    token = data.get('token', '').strip()
+    label = data.get('label', 'Cihaz').strip()
+    if not token:
+        return jsonify({'error': 'token boş olamaz'}), 400
+    with _fcm_lock:
+        tokens = _load_fcm_tokens()
+        # Aynı token varsa label güncelle
+        for t in tokens:
+            if t['token'] == token:
+                t['label'] = label
+                _save_fcm_tokens(tokens)
+                return jsonify({'ok': True, 'action': 'updated'})
+        tokens.append({'token': token, 'label': label, 'id': str(uuid.uuid4())[:8]})
+        _save_fcm_tokens(tokens)
+    return jsonify({'ok': True, 'action': 'registered'})
+
+@app.route('/fcm/tokens', methods=['GET'])
+def fcm_tokens():
+    """Kayıtlı token listesini döndürür."""
+    with _fcm_lock:
+        tokens = _load_fcm_tokens()
+    # Token'ı kısalt (güvenlik için frontend'e tam token gösterme)
+    safe = [{'id': t['id'], 'label': t['label'],
+             'token_preview': t['token'][:20] + '…'} for t in tokens]
+    return jsonify({'tokens': safe})
+
+@app.route('/fcm/tokens/<token_id>', methods=['DELETE'])
+def fcm_delete_token(token_id):
+    with _fcm_lock:
+        tokens = _load_fcm_tokens()
+        tokens = [t for t in tokens if t['id'] != token_id]
+        _save_fcm_tokens(tokens)
+    return jsonify({'ok': True})
+
+@app.route('/fcm/send', methods=['POST'])
+def fcm_send():
+    """
+    Belirli bir token'a (veya tüm kayıtlılara) FCM bildirimi gönderir.
+    Body: { "token_id": "...", "title": "...", "body": "..." }
+    token_id = "all"  →  tüm kayıtlı cihazlara gönder
+    Firebase Admin SDK kullanır; GOOGLE_APPLICATION_CREDENTIALS env
+    değişkeni ya da FCM_SERVICE_ACCOUNT_JSON (içerik olarak) gerekir.
+    """
+    try:
+        import firebase_admin
+        from firebase_admin import credentials, messaging
+    except ImportError:
+        return jsonify({'error': 'firebase-admin paketi yüklü değil. pip install firebase-admin'}), 500
+
+    data = request.json or {}
+    token_id = data.get('token_id', '').strip()
+    title    = data.get('title', 'VORTEX').strip()
+    body_txt = data.get('body', '').strip()
+
+    if not body_txt:
+        return jsonify({'error': 'body boş olamaz'}), 400
+
+    # Firebase uygulamasını bir kez başlat
+    if not firebase_admin._apps:
+        sa_json = os.environ.get('FCM_SERVICE_ACCOUNT_JSON')
+        if sa_json:
+            import tempfile
+            tmp = tempfile.NamedTemporaryFile(delete=False, suffix='.json', mode='w')
+            tmp.write(sa_json); tmp.close()
+            cred = credentials.Certificate(tmp.name)
+        else:
+            # GOOGLE_APPLICATION_CREDENTIALS env yolunu kullanır
+            cred = credentials.ApplicationDefault()
+        firebase_admin.initialize_app(cred)
+
+    with _fcm_lock:
+        all_tokens = _load_fcm_tokens()
+
+    if token_id == 'all':
+        targets = all_tokens
+    else:
+        targets = [t for t in all_tokens if t['id'] == token_id]
+
+    if not targets:
+        return jsonify({'error': 'Hedef cihaz bulunamadı'}), 404
+
+    results = []
+    for t in targets:
+        try:
+            msg = messaging.Message(
+                notification=messaging.Notification(title=title, body=body_txt),
+                token=t['token'],
+            )
+            resp = messaging.send(msg)
+            results.append({'id': t['id'], 'label': t['label'], 'ok': True, 'message_id': resp})
+        except Exception as e:
+            results.append({'id': t['id'], 'label': t['label'], 'ok': False, 'error': str(e)})
+
+    success = sum(1 for r in results if r['ok'])
+    return jsonify({'sent': success, 'total': len(targets), 'results': results})
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 7861))
