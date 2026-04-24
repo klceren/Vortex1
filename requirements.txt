@@ -30,3 +30,5 @@ numpy==1.26.4
 # ── Diğer yardımcılar ─────────────────────────────────────
 python-dateutil==2.9.0.post0
 pytz==2026.1
+
+firebase-admin
